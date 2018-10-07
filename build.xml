@@ -682,110 +682,110 @@
     </target>
 
     <!-- Includes all modules for javadoc.lwjgl.org -->
-    <target name="javadoc" description="Generates the LWJGL JavaDoc" depends="-compile-generator,-build-version">
-        <echo message="It is recommended to generate JavaDoc on JDK 10 or higher." unless:set="jdk10" taskname="Warning"/>
-        <delete dir="${bin.javadoc}"/>
+    <!-- <target name="javadoc" description="Generates the LWJGL JavaDoc" depends="-compile-generator,-build-version"> -->
+    <!--     <echo message="It is recommended to generate JavaDoc on JDK 10 or higher." unless:set="jdk10" taskname="Warning"/> -->
+    <!--     <delete dir="${bin.javadoc}"/> -->
 
-        <path id="javadoc.sources">
-            <pathelement path="${module.sourcepath}"/>
-        </path>
+    <!--     <path id="javadoc.sources"> -->
+    <!--         <pathelement path="${module.sourcepath}"/> -->
+    <!--     </path> -->
 
-        <javadoc
-            destdir="${bin.javadoc}"
-            sourcepathref="javadoc.sources"
-            source="9"
-            windowtitle="LWJGL ${build.version}"
-            encoding="UTF-8"
-            docencoding="UTF-8"
-            charset="UTF-8"
-            useexternalfile="true"
-            nohelp="true"
-            notree="true"
-            public="true"
-            Splitindex="true"
-            maxmemory="1G"
-            failonerror="true"
-        >
-            <doctitle><![CDATA[<h1>Lightweight Java Game Library</h1>]]></doctitle>
-            <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom>
+    <!--     <javadoc -->
+    <!--         destdir="${bin.javadoc}" -->
+    <!--         sourcepathref="javadoc.sources" -->
+    <!--         source="9" -->
+    <!--         windowtitle="LWJGL ${build.version}" -->
+    <!--         encoding="UTF-8" -->
+    <!--         docencoding="UTF-8" -->
+    <!--         charset="UTF-8" -->
+    <!--         useexternalfile="true" -->
+    <!--         nohelp="true" -->
+    <!--         notree="true" -->
+    <!--         public="true" -->
+    <!--         Splitindex="true" -->
+    <!--         maxmemory="1G" -->
+    <!--         failonerror="true" -->
+    <!--     > -->
+    <!--         <doctitle><![CDATA[<h1>Lightweight Java Game Library</h1>]]></doctitle> -->
+    <!--         <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom> -->
 
-            <classpath>
-                <pathelement path="${lib}/java/jsr305.jar"/>
-            </classpath>
+    <!--         <classpath> -->
+    <!--             <pathelement path="${lib}/java/jsr305.jar"/> -->
+    <!--         </classpath> -->
 
-            <arg value="-XDignore.symbol.file=true"/> <!-- Supresses internal API (e.g. Unsafe) usage warnings -->
+    <!--         <arg value="-XDignore.symbol.file=true"/> <!-\- Supresses internal API (e.g. Unsafe) usage warnings -\-> -->
 
-            <arg line="-Xdoclint:html,reference,syntax"/>
-            <arg line="-Xmaxerrs 1000 -Xmaxwarns 1000"/>
-            <arg line="-notimestamp"/>
-            <arg value="-html5" if:set="jdk9"/>
-            <arg line="-J-Dfile.encoding=UTF8 -J-Dline.separator=&#10;"/>
-            <arg line="--add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/>
-        </javadoc>
-        <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="${bin.javadoc}"/>
+    <!--         <arg line="-Xdoclint:html,reference,syntax"/> -->
+    <!--         <arg line="-Xmaxerrs 1000 -Xmaxwarns 1000"/> -->
+    <!--         <arg line="-notimestamp"/> -->
+    <!--         <arg value="-html5" if:set="jdk9"/> -->
+    <!--         <arg line="-J-Dfile.encoding=UTF8 -J-Dline.separator=&#10;"/> -->
+    <!--         <arg line="-\-add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/> -->
+    <!--     </javadoc> -->
+    <!--     <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="${bin.javadoc}"/> -->
 
-        <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true">
-            <classpath path="${bin.generator}"/>
+    <!--     <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true"> -->
+    <!--         <classpath path="${bin.generator}"/> -->
 
-            <arg value="${bin.javadoc}"/>
-        </java>
-    </target>
+    <!--         <arg value="${bin.javadoc}"/> -->
+    <!--     </java> -->
+    <!-- </target> -->
 
-    <target name="upload-native" description="Uploads native build artifacts to build.lwjgl.org" depends="compile-native">
-        <fail message="AWS credentials not configured.">
-            <condition>
-                <not>
-                    <or>
-                        <and>
-                            <isset property="env.AWS_ACCESS_KEY_ID"/>
-                            <isset property="env.AWS_SECRET_ACCESS_KEY"/>
-                        </and>
-                        <isset property="env.AWS_CONFIG_FILE"/>
-                    </or>
-                </not>
-            </condition>
-        </fail>
+    <!-- <target name="upload-native" description="Uploads native build artifacts to build.lwjgl.org" depends="compile-native"> -->
+    <!--     <fail message="AWS credentials not configured."> -->
+    <!--         <condition> -->
+    <!--             <not> -->
+    <!--                 <or> -->
+    <!--                     <and> -->
+    <!--                         <isset property="env.AWS_ACCESS_KEY_ID"/> -->
+    <!--                         <isset property="env.AWS_SECRET_ACCESS_KEY"/> -->
+    <!--                     </and> -->
+    <!--                     <isset property="env.AWS_CONFIG_FILE"/> -->
+    <!--                 </or> -->
+    <!--             </not> -->
+    <!--         </condition> -->
+    <!--     </fail> -->
 
-        <local name="revision"/>
-        <property name="revision" value="liblwjgl.so.git" if:set="platform.linux"/>
-        <property name="revision" value="liblwjgl.dylib.git" if:set="platform.macos"/>
-        <condition property="revision" value="lwjgl.dll.git" else="lwjgl32.dll.git" if:set="platform.windows">
-            <equals arg1="${build.arch}" arg2="x64"/>
-        </condition>
+    <!--     <local name="revision"/> -->
+    <!--     <property name="revision" value="liblwjgl.so.git" if:set="platform.linux"/> -->
+    <!--     <property name="revision" value="liblwjgl.dylib.git" if:set="platform.macos"/> -->
+    <!--     <condition property="revision" value="lwjgl.dll.git" else="lwjgl32.dll.git" if:set="platform.windows"> -->
+    <!--         <equals arg1="${build.arch}" arg2="x64"/> -->
+    <!--     </condition> -->
 
-        <exec executable="git" failonerror="true" output="${lib}/${revision}" taskname="Git revision">
-            <arg value="log"/>
-            <arg value="--first-parent"/>
-            <arg value="--pretty=format:%H"/>
-            <arg value="HEAD~2..HEAD~1"/> <!-- Skip the CI commit -->
-        </exec>
+    <!--     <exec executable="git" failonerror="true" output="${lib}/${revision}" taskname="Git revision"> -->
+    <!--         <arg value="log"/> -->
+    <!--         <arg value="-\-first-parent"/> -->
+    <!--         <arg value="-\-pretty=format:%H"/> -->
+    <!--         <arg value="HEAD~2..HEAD~1"/> <!-\- Skip the CI commit -\-> -->
+    <!--     </exec> -->
 
-        <local name="libraries"/>
-        <property name="libraries" value="liblwjgl*" unless:set="platform.windows"/>
-        <condition property="libraries" value="lwjgl*" else="lwjgl*32.*" if:set="platform.windows">
-            <equals arg1="${build.arch}" arg2="x64"/>
-        </condition>
+    <!--     <local name="libraries"/> -->
+    <!--     <property name="libraries" value="liblwjgl*" unless:set="platform.windows"/> -->
+    <!--     <condition property="libraries" value="lwjgl*" else="lwjgl*32.*" if:set="platform.windows"> -->
+    <!--         <equals arg1="${build.arch}" arg2="x64"/> -->
+    <!--     </condition> -->
 
-        <local name="exclude_libraries"/>
-        <condition property="exclude_libraries" value="lwjgl*32.*" if:set="platform.windows">
-            <equals arg1="${build.arch}" arg2="x64"/>
-        </condition>
+    <!--     <local name="exclude_libraries"/> -->
+    <!--     <condition property="exclude_libraries" value="lwjgl*32.*" if:set="platform.windows"> -->
+    <!--         <equals arg1="${build.arch}" arg2="x64"/> -->
+    <!--     </condition> -->
 
-        <apply executable="aws" failonerror="true" relative="true" taskname="S3 upload">
-            <arg value="s3"/>
-            <arg value="cp"/>
+    <!--     <apply executable="aws" failonerror="true" relative="true" taskname="S3 upload"> -->
+    <!--         <arg value="s3"/> -->
+    <!--         <arg value="cp"/> -->
 
-            <srcfile/>
+    <!--         <srcfile/> -->
 
-            <arg value="s3://build.lwjgl.org/${build.type}/${platform.remote}/${build.arch}/"/>
-            <arg line='--acl public-read --storage-class REDUCED_REDUNDANCY --cache-control "public, must-revalidate, proxy-revalidate, max-age=0"'/>
+    <!--         <arg value="s3://build.lwjgl.org/${build.type}/${platform.remote}/${build.arch}/"/> -->
+    <!--         <arg line='-\-acl public-read -\-storage-class REDUCED_REDUNDANCY -\-cache-control "public, must-revalidate, proxy-revalidate, max-age=0"'/> -->
 
-            <fileset dir=".">
-                <include name="${lib}/${libraries}"/>
-                <exclude name="${lib}/${exclude_libraries}" if:set="exclude_libraries"/>
-            </fileset>
-        </apply>
-    </target>
+    <!--         <fileset dir="."> -->
+    <!--             <include name="${lib}/${libraries}"/> -->
+    <!--             <exclude name="${lib}/${exclude_libraries}" if:set="exclude_libraries"/> -->
+    <!--         </fileset> -->
+    <!--     </apply> -->
+    <!-- </target> -->
 
     <macrodef name="get-release">
         <attribute name="url"/>
@@ -922,61 +922,61 @@
             <available file="${module.lwjgl}/@{name}/src/main/java" type="dir" property="hasMain"/>
 
             <!-- Bundle javadoc -->
-            <mkdir dir="${release}/${module}/javadoc"/>
-            <javadoc
-                destdir="${release}/${module}/javadoc"
-                source="9"
-                windowtitle="LWJGL ${build.version} - @{title}"
-                encoding="UTF-8"
-                docencoding="UTF-8"
-                charset="UTF-8"
-                useexternalfile="true"
-                nohelp="true"
-                notree="true"
-                public="true"
-                failonerror="true"
-            >
-                <doctitle><![CDATA[<h1>LWJGL - @{title}</h1>]]></doctitle>
-                <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom>
+            <!-- <mkdir dir="${release}/${module}/javadoc"/> -->
+            <!-- <javadoc -->
+            <!--     destdir="${release}/${module}/javadoc" -->
+            <!--     source="9" -->
+            <!--     windowtitle="LWJGL ${build.version} - @{title}" -->
+            <!--     encoding="UTF-8" -->
+            <!--     docencoding="UTF-8" -->
+            <!--     charset="UTF-8" -->
+            <!--     useexternalfile="true" -->
+            <!--     nohelp="true" -->
+            <!--     notree="true" -->
+            <!--     public="true" -->
+            <!--     failonerror="true" -->
+            <!-- > -->
+            <!--     <doctitle><![CDATA[<h1>LWJGL - @{title}</h1>]]></doctitle> -->
+            <!--     <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom> -->
 
-                <classpath>
-                    <pathelement path="${module.classpath}"/>
-                    <pathelement path="${lib}/java/jsr305.jar"/>
-                </classpath>
+            <!--     <classpath> -->
+            <!--         <pathelement path="${module.classpath}"/> -->
+            <!--         <pathelement path="${lib}/java/jsr305.jar"/> -->
+            <!--     </classpath> -->
 
-                <fileset dir="${module.lwjgl}/@{name}/src/main/java" includes="**" if:set="hasMain"/>
-                <fileset dir="${module.lwjgl}/@{name}/src/generated/java" includes="**"/>
+            <!--     <fileset dir="${module.lwjgl}/@{name}/src/main/java" includes="**" if:set="hasMain"/> -->
+            <!--     <fileset dir="${module.lwjgl}/@{name}/src/generated/java" includes="**"/> -->
 
-                <arg value="-XDignore.symbol.file=true"/> <!-- Supresses internal API (e.g. Unsafe) usage warnings -->
+            <!--     <arg value="-XDignore.symbol.file=true"/> <!-\- Supresses internal API (e.g. Unsafe) usage warnings -\-> -->
 
-                <arg line="-Xdoclint:html,reference,syntax"/>
-                <arg line="-Xmaxerrs 1000 -Xmaxwarns 1000"/>
-                <arg value="-html5" if:set="jdk9"/>
-                <arg line="-J-Dfile.encoding=UTF8"/>
-                <arg line="--add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/>
-            </javadoc>
-            <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="${release}/${module}/javadoc"/>
+            <!--     <arg line="-Xdoclint:html,reference,syntax"/> -->
+            <!--     <arg line="-Xmaxerrs 1000 -Xmaxwarns 1000"/> -->
+            <!--     <arg value="-html5" if:set="jdk9"/> -->
+            <!--     <arg line="-J-Dfile.encoding=UTF8"/> -->
+            <!--     <arg line="-\-add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/> -->
+            <!-- </javadoc> -->
+            <!-- <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="${release}/${module}/javadoc"/> -->
 
-            <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true">
-                <classpath path="${bin.generator}"/>
+            <!-- <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true"> -->
+            <!--     <classpath path="${bin.generator}"/> -->
 
-                <arg value="${release}/${module}/javadoc"/>
-            </java>
-            <zip destfile="${release}/${module}/${module}-javadoc.jar" basedir="${release}/${module}/javadoc" includes="**" level="9"/>
-            <delete dir="${release}/${module}/javadoc"/>
+            <!--     <arg value="${release}/${module}/javadoc"/> -->
+            <!-- </java> -->
+            <!-- <zip destfile="${release}/${module}/${module}-javadoc.jar" basedir="${release}/${module}/javadoc" includes="**" level="9"/> -->
+            <!-- <delete dir="${release}/${module}/javadoc"/> -->
 
             <!-- Bundle source -->
-            <copy
-                file ="${module.lwjgl}/@{name}/src/main/resources/module-info.java"
-                todir="${module.lwjgl}/@{name}/src/generated/java/META-INF/versions/9"
-                quiet="true"
-                if:set="jdk9"
-            />
-            <jar destfile="${release}/${module}/${module}-sources.jar" level="9">
-                <fileset dir="${module.lwjgl}/@{name}/src/main/java" includes="**" if:set="hasMain"/>
-                <fileset dir="${module.lwjgl}/@{name}/src/generated/java" includes="**"/>
-            </jar>
-            <delete dir="${module.lwjgl}/@{name}/src/generated/java/META-INF" quiet="true"/>
+            <!-- <copy -->
+            <!--     file ="${module.lwjgl}/@{name}/src/main/resources/module-info.java" -->
+            <!--     todir="${module.lwjgl}/@{name}/src/generated/java/META-INF/versions/9" -->
+            <!--     quiet="true" -->
+            <!--     if:set="jdk9" -->
+            <!-- /> -->
+            <!-- <jar destfile="${release}/${module}/${module}-sources.jar" level="9"> -->
+            <!--     <fileset dir="${module.lwjgl}/@{name}/src/main/java" includes="**" if:set="hasMain"/> -->
+            <!--     <fileset dir="${module.lwjgl}/@{name}/src/generated/java" includes="**"/> -->
+            <!-- </jar> -->
+            <!-- <delete dir="${module.lwjgl}/@{name}/src/generated/java/META-INF" quiet="true"/> -->
 
             <!-- Copy license -->
             <copy todir="${release}/${module}">
@@ -985,29 +985,29 @@
         </sequential>
     </macrodef>
 
-    <target name="-check-release-jdk">
-        <fail message="The JAVA8_HOME environment variable is not set." if:set="jdk9">
-            <condition>
-                <not><isset property="env.JAVA8_HOME"/></not>
-            </condition>
-        </fail>
+    <!-- <target name="-check-release-jdk"> -->
+    <!--     <fail message="The JAVA8_HOME environment variable is not set." if:set="jdk9"> -->
+    <!--         <condition> -->
+    <!--             <not><isset property="env.JAVA8_HOME"/></not> -->
+    <!--         </condition> -->
+    <!--     </fail> -->
 
-        <local name="input"/>
-        <input
-            message="It is recommended to build LWJGL releases on JDK 10 or higher. Continue with current JDK?"
-            validargs="y,n"
-            defaultvalue="n"
-            addproperty="input"
-            unless:set="jdk10"
-        />
-        <fail message="Cancelled" unless:set="jdk9">
-            <condition>
-                <equals arg1="n" arg2="${input}"/>
-            </condition>
-        </fail>
-    </target>
+    <!--     <local name="input"/> -->
+    <!--     <input -->
+    <!--         message="It is recommended to build LWJGL releases on JDK 10 or higher. Continue with current JDK?" -->
+    <!--         validargs="y,n" -->
+    <!--         defaultvalue="n" -->
+    <!--         addproperty="input" -->
+    <!--         unless:set="jdk10" -->
+    <!--     /> -->
+    <!--     <fail message="Cancelled" unless:set="jdk9"> -->
+    <!--         <condition> -->
+    <!--             <equals arg1="n" arg2="${input}"/> -->
+    <!--         </condition> -->
+    <!--     </fail> -->
+    <!-- </target> -->
 
-    <target name="release" depends="-check-release-jdk,clean-java,compile,-build-version">
+    <target name="release" depends="clean-java,compile,-build-version">
         <local name="revision"/>
         <condition property="revision" value="build ${build.revision}" else="SNAPSHOT">
             <isset property="build.revision"/>

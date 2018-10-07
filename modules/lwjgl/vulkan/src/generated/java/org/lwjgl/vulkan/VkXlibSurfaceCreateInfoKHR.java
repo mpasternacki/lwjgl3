@@ -17,6 +17,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.system.MemoryStack.*;
 
 import org.lwjgl.system.linux.*;
+import org.lwjgl.system.freebsd.*;
 
 /**
  * Structure specifying parameters of a newly created Xlib surface object.

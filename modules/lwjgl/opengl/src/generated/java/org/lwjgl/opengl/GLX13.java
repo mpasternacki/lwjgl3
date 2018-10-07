@@ -18,7 +18,7 @@ import static org.lwjgl.system.JNI.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-import org.lwjgl.system.linux.*;
+import org.lwjgl.system.freebsd.*;
 
 /** Native bindings to GLX 1.3. */
 public class GLX13 extends GLX12 {

@@ -173,7 +173,7 @@
                 <!-- </parallel> -->
             <!-- </beforeLink> -->
             <link>
-                <fileset dir="${lib}/${platform}/${build.arch}/">
+                <fileset dir="/usr/local/lib">
                     <include name="libdyn*.a"/>
                 </fileset>
             </link>

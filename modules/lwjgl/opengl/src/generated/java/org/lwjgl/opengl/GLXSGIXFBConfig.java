@@ -18,7 +18,7 @@ import static org.lwjgl.system.JNI.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-import org.lwjgl.system.linux.*;
+import org.lwjgl.system.freebsd.*;
 
 /**
  * Native bindings to the <a target="_blank" href="https://www.khronos.org/registry/OpenGL/extensions/SGIX/GLX_SGIX_fbconfig.txt">GLX_SGIX_fbconfig</a> extension.
