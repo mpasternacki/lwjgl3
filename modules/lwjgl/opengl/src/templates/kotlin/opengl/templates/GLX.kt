@@ -6,11 +6,11 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 
 val GLX = "GLX".nativeClass(Module.OPENGL, prefix = "GLX", prefixMethod = "glX", binding = GLBinding.delegate("GL.getFunctionProvider()")) {
     javaImport(
-        "org.lwjgl.system.linux.*"
+        "org.lwjgl.system.freebsd.*"
     )
 
     documentation = "Native bindings to GLX."

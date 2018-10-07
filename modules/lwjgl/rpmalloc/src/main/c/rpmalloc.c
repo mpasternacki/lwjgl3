@@ -1395,7 +1395,7 @@ rpmalloc_initialize_config(const rpmalloc_config_t* config) {
 				_memory_page_size = huge_page_size;
 				_memory_map_granularity = huge_page_size;
 			}
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) ||  defined(__FreeBSD__)
 			_memory_huge_pages = 1;
 			_memory_page_size = 2 * 1024 * 1024;
 			_memory_map_granularity = _memory_page_size;
@@ -1627,6 +1627,8 @@ _memory_map_os(size_t size, size_t* offset) {
 #else
 #  if defined(__APPLE__)
 	void* ptr = mmap(0, size + padding, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_UNINITIALIZED, (_memory_huge_pages ? VM_FLAGS_SUPERPAGE_SIZE_2MB : -1), 0);
+#  elif defined(__FreeBSD__)
+	void* ptr = mmap(0, size + padding, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_UNINITIALIZED | (_memory_huge_pages ? MAP_ALIGNED_SUPER : 0), -1, 0);
 #  else
 	void* ptr = mmap(0, size + padding, PROT_READ | PROT_WRITE, (_memory_huge_pages ? MAP_HUGETLB : 0) | MAP_PRIVATE | MAP_ANONYMOUS | MAP_UNINITIALIZED, -1, 0);
 #  endif

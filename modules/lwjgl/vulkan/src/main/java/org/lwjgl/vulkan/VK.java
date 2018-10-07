@@ -48,6 +48,7 @@ public final class VK {
     public static void create() {
         SharedLibrary VK;
         switch (Platform.get()) {
+            case FREEBSD:
             case LINUX:
                 VK = Library.loadNative(VK.class, Configuration.VULKAN_LIBRARY_NAME, "libvulkan.so.1");
                 break;

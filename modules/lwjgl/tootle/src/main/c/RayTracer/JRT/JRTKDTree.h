@@ -11,7 +11,7 @@
 #include "JRTTriangleIntersection.h"
 #include "JRTCore.h"
 
-#ifdef _LINUX
+#ifndef _WINDOWS
     inline void* _aligned_malloc(size_t size, size_t alignment) {
         void *p;
         return posix_memalign(&p, alignment, size) ? NULL : p;

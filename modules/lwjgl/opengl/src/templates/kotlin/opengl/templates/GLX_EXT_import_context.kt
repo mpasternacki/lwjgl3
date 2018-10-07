@@ -6,7 +6,7 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 
 val GLX_EXT_import_context = "GLXEXTImportContext".nativeClassGLX("GLX_EXT_import_context", EXT) {
     documentation =

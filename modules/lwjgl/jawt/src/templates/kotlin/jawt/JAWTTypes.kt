@@ -6,7 +6,7 @@ package jawt
 
 import org.lwjgl.generator.*
 import core.jni.*
-import core.linux.*
+import core.freebsd.*
 import core.windows.*
 
 val JAWT_Rectangle = struct(Module.JAWT, "JAWTRectangle", nativeName = "JAWT_Rectangle") {

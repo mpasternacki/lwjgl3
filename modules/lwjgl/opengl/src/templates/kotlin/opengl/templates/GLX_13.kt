@@ -6,11 +6,11 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 
 val GLX13 = "GLX13".nativeClassGLX("GLX13") {
     extends = GLX12
-    javaImport("org.lwjgl.system.linux.*")
+    javaImport("org.lwjgl.system.freebsd.*")
 
     documentation = "Native bindings to GLX 1.3."
 

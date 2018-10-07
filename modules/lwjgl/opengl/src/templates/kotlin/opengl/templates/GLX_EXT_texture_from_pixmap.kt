@@ -6,7 +6,7 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 
 val GLX_EXT_texture_from_pixmap = "GLXEXTTextureFromPixmap".nativeClassGLX("GLX_EXT_texture_from_pixmap", EXT) {
     documentation =

@@ -6,9 +6,9 @@ package glfw.templates
 
 import org.lwjgl.generator.*
 import glfw.*
-import core.linux.*
+import core.freebsd.*
 
-val GLFWNativeX11 = "GLFWNativeX11".nativeClass(Module.GLFW, nativeSubPath = "linux", prefix = "GLFW", binding = GLFW_BINDING_DELEGATE) {
+val GLFWNativeX11 = "GLFWNativeX11".nativeClass(Module.GLFW, nativeSubPath = "freebsd", prefix = "GLFW", binding = GLFW_BINDING_DELEGATE) {
     documentation = "Native bindings to the GLFW library's X11 native access functions."
 
     Display.p(

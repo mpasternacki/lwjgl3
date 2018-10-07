@@ -6,10 +6,10 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 
 val GLX_SGIX_fbconfig = "GLXSGIXFBConfig".nativeClassGLX("GLX_SGIX_fbconfig", SGIX) {
-    javaImport("org.lwjgl.system.linux.*")
+    javaImport("org.lwjgl.system.freebsd.*")
 
     documentation =
         """

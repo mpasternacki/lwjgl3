@@ -13,7 +13,7 @@
 
 #include <iostream>
 
-#ifdef _LINUX
+#ifndef _WINDOWS
     typedef unsigned long long UINT64;
 #else
     typedef unsigned __int64 UINT64;

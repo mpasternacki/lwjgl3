@@ -6,7 +6,7 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 import core.windows.*
 
 val NV_copy_image = "NVCopyImage".nativeClassGL("NV_copy_image", postfix = NV) {

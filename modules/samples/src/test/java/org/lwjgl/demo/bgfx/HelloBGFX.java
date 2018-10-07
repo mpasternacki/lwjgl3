@@ -60,6 +60,7 @@ public final class HelloBGFX {
 
             switch (Platform.get()) {
                 case LINUX:
+                case FREEBSD:
                     platformData.ndt(GLFWNativeX11.glfwGetX11Display());
                     platformData.nwh(GLFWNativeX11.glfwGetX11Window(window));
                     break;

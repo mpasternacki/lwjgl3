@@ -195,6 +195,7 @@ public class Mandelbrot {
                         .put(wglGetCurrentDC());
                     break;
                 case LINUX:
+                case FREEBSD:
                     ctxProps
                         .put(CL_GL_CONTEXT_KHR)
                         .put(glfwGetGLXContext(window.handle))

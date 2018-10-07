@@ -8,6 +8,18 @@ import java.util.regex.*;
 
 public enum Platform {
 
+    FREEBSD("FreeBSD") {
+        private final Pattern SO = Pattern.compile("(?:^|/)lib\\w+[.]so(?:[.]\\d+)*$");
+
+        @Override
+        String mapLibraryName(String name) {
+            if (SO.matcher(name).find()) {
+                return name;
+            }
+
+            return System.mapLibraryName(name);
+        }
+    },
     LINUX("Linux") {
         private final Pattern SO = Pattern.compile("(?:^|/)lib\\w+[.]so(?:[.]\\d+)*$");
 
@@ -49,8 +61,10 @@ public enum Platform {
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Windows")) {
             PLATFORM = Platform.WINDOWS;
-        } else if (osName.startsWith("Linux") || osName.startsWith("FreeBSD") || osName.startsWith("SunOS") || osName.startsWith("Unix")) {
+        } else if (osName.startsWith("Linux") || osName.startsWith("SunOS") || osName.startsWith("Unix")) {
             PLATFORM = Platform.LINUX;
+        } else if (osName.startsWith("FreeBSD")) {
+            PLATFORM = Platform.FREEBSD;
         } else if (osName.startsWith("Mac OS X") || osName.startsWith("Darwin")) {
             PLATFORM = Platform.MACOSX;
         } else {

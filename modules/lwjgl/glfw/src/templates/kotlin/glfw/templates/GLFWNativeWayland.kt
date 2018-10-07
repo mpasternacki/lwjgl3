@@ -6,9 +6,9 @@ package glfw.templates
 
 import org.lwjgl.generator.*
 import glfw.*
-import core.linux.*
+import core.freebsd.*
 
-val GLFWNativeWayland = "GLFWNativeWayland".nativeClass(Module.GLFW, nativeSubPath = "linux", prefix = "GLFW", binding = GLFW_BINDING_DELEGATE) {
+val GLFWNativeWayland = "GLFWNativeWayland".nativeClass(Module.GLFW, nativeSubPath = "freebsd", prefix = "GLFW", binding = GLFW_BINDING_DELEGATE) {
     documentation = "Native bindings to the GLFW library's Wayland native access functions."
 
     wl_display.p(

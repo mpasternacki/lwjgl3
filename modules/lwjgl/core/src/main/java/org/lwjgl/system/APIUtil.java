@@ -5,6 +5,7 @@
 package org.lwjgl.system;
 
 import org.lwjgl.*;
+import org.lwjgl.system.freebsd.*;
 import org.lwjgl.system.linux.*;
 import org.lwjgl.system.macosx.*;
 import org.lwjgl.system.windows.*;
@@ -122,6 +123,8 @@ public final class APIUtil {
                 return new WindowsLibrary(name);
             case LINUX:
                 return new LinuxLibrary(name);
+            case FREEBSD:
+                return new FreeBSDLibrary(name);
             case MACOSX:
                 return MacOSXLibrary.create(name);
             default:

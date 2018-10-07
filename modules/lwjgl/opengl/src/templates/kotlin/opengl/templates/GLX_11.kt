@@ -6,7 +6,7 @@ package opengl.templates
 
 import org.lwjgl.generator.*
 import opengl.*
-import core.linux.*
+import core.freebsd.*
 
 val GLX11 = "GLX11".nativeClassGLX("GLX11") {
     extends = GLX

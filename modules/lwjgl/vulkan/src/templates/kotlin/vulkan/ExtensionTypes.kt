@@ -756,6 +756,7 @@ val VkDisplayPresentInfoKHR = struct(Module.VULKAN, "VkDisplayPresentInfoKHR") {
 
 val VkXlibSurfaceCreateInfoKHR = struct(Module.VULKAN, "VkXlibSurfaceCreateInfoKHR") {
     javaImport("org.lwjgl.system.linux.*")
+    javaImport("org.lwjgl.system.freebsd.*")
     documentation =
         """
         Structure specifying parameters of a newly created Xlib surface object.

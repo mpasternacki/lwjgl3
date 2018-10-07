@@ -40,6 +40,7 @@ enum class Module(
 ) {
     CORE("core", "org.lwjgl.system"),
     CORE_DYNCALL("core.dyncall", "org.lwjgl.system.dyncall"),
+    CORE_FREEBSD("core.freebsd", "org.lwjgl.system.freebsd"),
     CORE_JNI("core.jni", "org.lwjgl.system.jni"),
     CORE_LIBC("core.libc", "org.lwjgl.system.libc"),
     CORE_LINUX("core.linux", "org.lwjgl.system.linux"),

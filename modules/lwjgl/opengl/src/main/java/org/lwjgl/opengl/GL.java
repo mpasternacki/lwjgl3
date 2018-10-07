@@ -5,6 +5,7 @@
 package org.lwjgl.opengl;
 
 import org.lwjgl.system.*;
+import org.lwjgl.system.freebsd.*;
 import org.lwjgl.system.macosx.*;
 import org.lwjgl.system.windows.*;
 
@@ -22,7 +23,7 @@ import static org.lwjgl.system.Checks.*;
 import static org.lwjgl.system.JNI.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import static org.lwjgl.system.linux.X11.*;
+import static org.lwjgl.system.freebsd.X11.*;
 import static org.lwjgl.system.windows.GDI32.*;
 import static org.lwjgl.system.windows.User32.*;
 import static org.lwjgl.system.windows.WindowsUtil.*;
@@ -95,6 +96,7 @@ public final class GL {
     public static void create() {
         SharedLibrary GL;
         switch (Platform.get()) {
+            case FREEBSD:
             case LINUX:
                 GL = Library.loadNative(GL.class, Configuration.OPENGL_LIBRARY_NAME, "libGL.so.1", "libGL.so");
                 break;
@@ -157,6 +159,7 @@ public final class GL {
                         }
                     };
                     break;
+                case FREEBSD:
                 case LINUX:
                     functionProvider = new SharedLibraryGL(OPENGL) {
                         private final long glXGetProcAddress;

@@ -5,7 +5,7 @@
 package opengl
 
 import org.lwjgl.generator.*
-import core.linux.*
+import core.freebsd.*
 
 val GLXContext = "GLXContext".handle
 val GLXFBConfig = "GLXFBConfig".handle
