@@ -318,7 +318,7 @@
         </build>
 
         <!-- rpmalloc -->
-        <build_simple module="rpmalloc"/>
+        <build_simple module="rpmalloc" gcc.exec="gcc-4.9"/>
 
         <!-- SSE -->
         <build module="sse" simple="true" if:true="${binding.sse}">

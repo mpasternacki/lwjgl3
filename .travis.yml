@@ -1,0 +1,31 @@
+dist: trusty
+sudo: false
+git:
+  depth: 3
+env:
+  global:
+  - secure: "AzM98HKS2RDP+/WdvsFiEqTbVPwLBEAtNXDQPR7cV1gAEZoNhri/iINnRAHtECgVQDt2gKmxEiyOA07zMKPpt5PwhoyZUnICwxl1t2FOkTL4LlfI+3ew1rf4F8wmaSQX/BRT7b3IgyEI0RFRCow8KH49X8xdEtAFYJB3YFu2Y6M="
+  - secure: "BDNmD9y3mdZEQoFgXW2dC1FawofkThFwbITidMqeKLxSstNxQGKCpxOFAV604kaTGsf7ihpdm8WYE5IjHKTaoewdQ9hLXZPtswWXq5Ebe2gKHqJVNZa2bFD6hQBD2S7BLWWeAVIoLkyfV/QLnplOquUZTXWZ3TW2A+IXzQE+AnE="
+language: java
+jdk: oraclejdk8
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - ant
+    - gcc-4.9
+    - g++-4.9
+    - oracle-java8-installer
+    - xorg-dev
+    - libgtk-3-dev
+
+before_install:
+- pip install --user awscli
+- export PATH=$PATH:$HOME/.local/bin
+
+script:
+- export LWJGL_BUILD_TYPE=nightly
+#- ant compile-templates tests upload-native -Dgcc.version=4.9
+- ant compile-templates tests upload-native
