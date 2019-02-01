@@ -52,7 +52,7 @@
                 <arg value="-I${src.main.rel}" if:true="@{simple}"/>
 
                 <source/>
-                <fileset dir="." includes="${src.generated}/*.c" if:true="@{simple}"/>
+                <fileset dir="." includes="${src.generated}/*" if:true="@{simple}"/>
 
                 <regexpmapper from="(\w+)\.c(?:c|pp)?$" to="\1.o"/>
             </apply>
@@ -176,6 +176,7 @@
                 <fileset dir="/usr/local/lib">
                     <include name="libdyn*.a"/>
                 </fileset>
+		<arg value="-ldl"/>
             </link>
         </build>
 
