@@ -112,7 +112,7 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
             <li>The subpass index of the current render pass <b>must</b> be equal to the {@code subpass} member of the ##VkGraphicsPipelineCreateInfo structure specified when creating the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS.</li>
             <li>For each set <em>n</em> that is statically used by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS, a descriptor set <b>must</b> have been bound to <em>n</em> at #PIPELINE_BIND_POINT_GRAPHICS, with a {@code VkPipelineLayout} that is compatible for set <em>n</em>, with the {@code VkPipelineLayout} used to create the current {@code VkPipeline}, as described in <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#descriptorsets-compatibility">the “Pipeline Layout Compatibility” section</a></li>
             <li>For each push constant that is statically used by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS, a push constant value <b>must</b> have been set for #PIPELINE_BIND_POINT_GRAPHICS, with a {@code VkPipelineLayout} that is compatible for push constants, with the {@code VkPipelineLayout} used to create the current {@code VkPipeline}, as described in <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#descriptorsets-compatibility">the “Pipeline Layout Compatibility” section</a></li>
-            <li>Descriptors in each bound descriptor set, specified via #CmdBindDescriptorSets(), <b>must</b> be valid if they are statically used by the currently bound {@code VkPipeline} object, specified via #CmdBindPipeline()</li>
+            <li>Descriptors in each bound descriptor set, specified via {@code vkCmdBindDescriptorSets}, <b>must</b> be valid if they are statically used by the currently bound {@code VkPipeline} object, specified via {@code vkCmdBindPipeline}</li>
             <li>A valid graphics pipeline <b>must</b> be bound to the current command buffer with #PIPELINE_BIND_POINT_GRAPHICS</li>
             <li>If the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS requires any dynamic state, that state <b>must</b> have been set on the current command buffer</li>
             <li>Every input attachment used by the current subpass <b>must</b> be bound to the pipeline via a descriptor set</li>
@@ -121,9 +121,9 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
             <li>If any {@code VkSampler} object that is accessed from a shader by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS uses unnormalized coordinates, it <b>must</b> not be used with any of the SPIR-V {@code OpImageSample*} or {@code OpImageSparseSample*} instructions that includes a LOD bias or any offset values, in any shader stage</li>
             <li>If the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#features-features-robustBufferAccess">robust buffer access</a> feature is not enabled, and any shader stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS accesses a uniform buffer, it <b>must</b> not access values outside of the range of that buffer specified in the currently bound descriptor set</li>
             <li>If the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#features-features-robustBufferAccess">robust buffer access</a> feature is not enabled, and any shader stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS accesses a storage buffer, it <b>must</b> not access values outside of the range of that buffer specified in the currently bound descriptor set</li>
-            <li>Any {@code VkImageView} being sampled with #FILTER_LINEAR as a result of this command <b>must</b> be of a format which supports linear filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by #GetPhysicalDeviceFormatProperties()</li>
+            <li>Any {@code VkImageView} being sampled with #FILTER_LINEAR as a result of this command <b>must</b> be of a format which supports linear filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by {@code vkGetPhysicalDeviceFormatProperties}</li>
             <li>Image subresources used as attachments in the current render pass <b>must</b> not be accessed in any way other than as an attachment by this command.</li>
-            <li>Any {@code VkImageView} being sampled with #FILTER_CUBIC_IMG as a result of this command <b>must</b> be of a format which supports cubic filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by #GetPhysicalDeviceFormatProperties()</li>
+            <li>Any {@code VkImageView} being sampled with #FILTER_CUBIC_IMG as a result of this command <b>must</b> be of a format which supports cubic filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by {@code vkGetPhysicalDeviceFormatProperties}</li>
             <li>Any {@code VkImageView} being sampled with #FILTER_CUBIC_IMG as a result of this command <b>must</b> not have a {@code VkImageViewType} of #IMAGE_VIEW_TYPE_3D, #IMAGE_VIEW_TYPE_CUBE, or #IMAGE_VIEW_TYPE_CUBE_ARRAY</li>
             <li>If the draw is recorded in a render pass instance with multiview enabled, the maximum instance index <b>must</b> be less than or equal to ##VkPhysicalDeviceMultiviewProperties{@code ::maxMultiviewInstanceIndex}.</li>
             <li>If {@code commandBuffer} is an unprotected command buffer, and any pipeline stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS reads from or writes to any image or buffer, that image or buffer <b>must</b> not be a protected image or protected buffer.</li>
@@ -154,9 +154,9 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
         </table>
         """,
 
-        VkCommandBuffer.IN("commandBuffer", "the command buffer into which the command will be recorded."),
-        uint32_t.IN("taskCount", "the number of local workgroups to dispatch in the X dimension. Y and Z dimension are implicitly set to one."),
-        uint32_t.IN("firstTask", "the X component of the first workgroup ID.")
+        VkCommandBuffer("commandBuffer", "the command buffer into which the command will be recorded."),
+        uint32_t("taskCount", "the number of local workgroups to dispatch in the X dimension. Y and Z dimension are implicitly set to one."),
+        uint32_t("firstTask", "the X component of the first workgroup ID.")
     )
 
     void(
@@ -176,7 +176,7 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
 ￿    uint32_t                                    stride);</code></pre>
 
         <h5>Description</h5>
-        #CmdDrawMeshTasksIndirectNV() behaves similarly to #CmdDrawMeshTasksNV() except that the parameters are read by the device from a buffer during execution. {@code drawCount} draws are executed by the command, with parameters taken from {@code buffer} starting at {@code offset} and increasing by {@code stride} bytes for each successive draw. The parameters of each draw are encoded in an array of ##VkDrawMeshTasksIndirectCommandNV structures. If {@code drawCount} is less than or equal to one, {@code stride} is ignored.
+        {@code vkCmdDrawMeshTasksIndirectNV} behaves similarly to #CmdDrawMeshTasksNV() except that the parameters are read by the device from a buffer during execution. {@code drawCount} draws are executed by the command, with parameters taken from {@code buffer} starting at {@code offset} and increasing by {@code stride} bytes for each successive draw. The parameters of each draw are encoded in an array of ##VkDrawMeshTasksIndirectCommandNV structures. If {@code drawCount} is less than or equal to one, {@code stride} is ignored.
 
         <h5>Valid Usage</h5>
         <ul>
@@ -189,7 +189,7 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
             <li>The subpass index of the current render pass <b>must</b> be equal to the {@code subpass} member of the ##VkGraphicsPipelineCreateInfo structure specified when creating the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS.</li>
             <li>For each set <em>n</em> that is statically used by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS, a descriptor set <b>must</b> have been bound to <em>n</em> at #PIPELINE_BIND_POINT_GRAPHICS, with a {@code VkPipelineLayout} that is compatible for set <em>n</em>, with the {@code VkPipelineLayout} used to create the current {@code VkPipeline}, as described in <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#descriptorsets-compatibility">the “Pipeline Layout Compatibility” section</a></li>
             <li>For each push constant that is statically used by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS, a push constant value <b>must</b> have been set for #PIPELINE_BIND_POINT_GRAPHICS, with a {@code VkPipelineLayout} that is compatible for push constants, with the {@code VkPipelineLayout} used to create the current {@code VkPipeline}, as described in <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#descriptorsets-compatibility">the “Pipeline Layout Compatibility” section</a></li>
-            <li>Descriptors in each bound descriptor set, specified via #CmdBindDescriptorSets(), <b>must</b> be valid if they are statically used by the currently bound {@code VkPipeline} object, specified via #CmdBindPipeline()</li>
+            <li>Descriptors in each bound descriptor set, specified via {@code vkCmdBindDescriptorSets}, <b>must</b> be valid if they are statically used by the currently bound {@code VkPipeline} object, specified via {@code vkCmdBindPipeline}</li>
             <li>All vertex input bindings accessed via vertex input variables declared in the vertex shader entry point&#8217;s interface <b>must</b> have valid buffers bound</li>
             <li>A valid graphics pipeline <b>must</b> be bound to the current command buffer with #PIPELINE_BIND_POINT_GRAPHICS</li>
             <li>If the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS requires any dynamic state, that state <b>must</b> have been set on the current command buffer</li>
@@ -202,9 +202,9 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
             <li>If any {@code VkSampler} object that is accessed from a shader by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS uses unnormalized coordinates, it <b>must</b> not be used with any of the SPIR-V {@code OpImageSample*} or {@code OpImageSparseSample*} instructions that includes a LOD bias or any offset values, in any shader stage</li>
             <li>If the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#features-features-robustBufferAccess">robust buffer access</a> feature is not enabled, and any shader stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS accesses a uniform buffer, it <b>must</b> not access values outside of the range of that buffer specified in the currently bound descriptor set</li>
             <li>If the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#features-features-robustBufferAccess">robust buffer access</a> feature is not enabled, and any shader stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS accesses a storage buffer, it <b>must</b> not access values outside of the range of that buffer specified in the currently bound descriptor set</li>
-            <li>Any {@code VkImageView} being sampled with #FILTER_LINEAR as a result of this command <b>must</b> be of a format which supports linear filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by #GetPhysicalDeviceFormatProperties()</li>
+            <li>Any {@code VkImageView} being sampled with #FILTER_LINEAR as a result of this command <b>must</b> be of a format which supports linear filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by {@code vkGetPhysicalDeviceFormatProperties}</li>
             <li>Image subresources used as attachments in the current render pass <b>must</b> not be accessed in any way other than as an attachment by this command.</li>
-            <li>Any {@code VkImageView} being sampled with #FILTER_CUBIC_IMG as a result of this command <b>must</b> be of a format which supports cubic filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by #GetPhysicalDeviceFormatProperties()</li>
+            <li>Any {@code VkImageView} being sampled with #FILTER_CUBIC_IMG as a result of this command <b>must</b> be of a format which supports cubic filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_CUBIC_BIT_IMG flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by {@code vkGetPhysicalDeviceFormatProperties}</li>
             <li>Any {@code VkImageView} being sampled with #FILTER_CUBIC_IMG as a result of this command <b>must</b> not have a {@code VkImageViewType} of #IMAGE_VIEW_TYPE_3D, #IMAGE_VIEW_TYPE_CUBE, or #IMAGE_VIEW_TYPE_CUBE_ARRAY</li>
             <li>If the draw is recorded in a render pass instance with multiview enabled, the maximum instance index <b>must</b> be less than or equal to ##VkPhysicalDeviceMultiviewProperties{@code ::maxMultiviewInstanceIndex}.</li>
             <li>If {@code commandBuffer} is an unprotected command buffer, and any pipeline stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS reads from or writes to any image or buffer, that image or buffer <b>must</b> not be a protected image or protected buffer.</li>
@@ -237,11 +237,11 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
         </table>
         """,
 
-        VkCommandBuffer.IN("commandBuffer", "the command buffer into which the command is recorded."),
-        VkBuffer.IN("buffer", "the buffer containing draw parameters."),
-        VkDeviceSize.IN("offset", "the byte offset into {@code buffer} where parameters begin."),
-        uint32_t.IN("drawCount", "the number of draws to execute, and <b>can</b> be zero."),
-        uint32_t.IN("stride", "the byte stride between successive sets of draw parameters.")
+        VkCommandBuffer("commandBuffer", "the command buffer into which the command is recorded."),
+        VkBuffer("buffer", "the buffer containing draw parameters."),
+        VkDeviceSize("offset", "the byte offset into {@code buffer} where parameters begin."),
+        uint32_t("drawCount", "the number of draws to execute, and <b>can</b> be zero."),
+        uint32_t("stride", "the byte stride between successive sets of draw parameters.")
     )
 
     void(
@@ -263,7 +263,7 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
 ￿    uint32_t                                    stride);</code></pre>
 
         <h5>Description</h5>
-        #CmdDrawMeshTasksIndirectCountNV() behaves similarly to #CmdDrawMeshTasksIndirectNV() except that the draw count is read by the device from a buffer during execution. The command will read an unsigned 32-bit integer from {@code countBuffer} located at {@code countBufferOffset} and use this as the draw count.
+        {@code vkCmdDrawMeshTasksIndirectCountNV} behaves similarly to #CmdDrawMeshTasksIndirectNV() except that the draw count is read by the device from a buffer during execution. The command will read an unsigned 32-bit integer from {@code countBuffer} located at {@code countBufferOffset} and use this as the draw count.
 
         <h5>Valid Usage</h5>
         <ul>
@@ -279,7 +279,7 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
             <li>The subpass index of the current render pass <b>must</b> be equal to the {@code subpass} member of the ##VkGraphicsPipelineCreateInfo structure specified when creating the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS.</li>
             <li>For each set <em>n</em> that is statically used by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS, a descriptor set <b>must</b> have been bound to <em>n</em> at #PIPELINE_BIND_POINT_GRAPHICS, with a {@code VkPipelineLayout} that is compatible for set <em>n</em>, with the {@code VkPipelineLayout} used to create the current {@code VkPipeline}, as described in <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#descriptorsets-compatibility">the “Pipeline Layout Compatibility” section</a></li>
             <li>For each push constant that is statically used by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS, a push constant value <b>must</b> have been set for #PIPELINE_BIND_POINT_GRAPHICS, with a {@code VkPipelineLayout} that is compatible for push constants, with the {@code VkPipelineLayout} used to create the current {@code VkPipeline}, as described in <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#descriptorsets-compatibility">the “Pipeline Layout Compatibility” section</a></li>
-            <li>Descriptors in each bound descriptor set, specified via #CmdBindDescriptorSets(), <b>must</b> be valid if they are statically used by the currently bound {@code VkPipeline} object, specified via #CmdBindPipeline()</li>
+            <li>Descriptors in each bound descriptor set, specified via {@code vkCmdBindDescriptorSets}, <b>must</b> be valid if they are statically used by the currently bound {@code VkPipeline} object, specified via {@code vkCmdBindPipeline}</li>
             <li>A valid graphics pipeline <b>must</b> be bound to the current command buffer with #PIPELINE_BIND_POINT_GRAPHICS</li>
             <li>If the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS requires any dynamic state, that state <b>must</b> have been set on the current command buffer</li>
             <li>If the count stored in {@code countBuffer} is equal to 1, <code>(offset sizeof(##VkDrawMeshTasksIndirectCommandNV))</code> <b>must</b> be less than or equal to the size of {@code buffer}</li>
@@ -291,7 +291,7 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
             <li>If any {@code VkSampler} object that is accessed from a shader by the {@code VkPipeline} currently bound to #PIPELINE_BIND_POINT_GRAPHICS uses unnormalized coordinates, it <b>must</b> not be used with any of the SPIR-V {@code OpImageSample*} or {@code OpImageSparseSample*} instructions that includes a LOD bias or any offset values, in any shader stage</li>
             <li>If the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#features-features-robustBufferAccess">robust buffer access</a> feature is not enabled, and any shader stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS accesses a uniform buffer, it <b>must</b> not access values outside of the range of that buffer specified in the currently bound descriptor set</li>
             <li>If the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\#features-features-robustBufferAccess">robust buffer access</a> feature is not enabled, and any shader stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS accesses a storage buffer, it <b>must</b> not access values outside of the range of that buffer specified in the currently bound descriptor set</li>
-            <li>Any {@code VkImageView} being sampled with #FILTER_LINEAR as a result of this command <b>must</b> be of a format which supports linear filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by #GetPhysicalDeviceFormatProperties()</li>
+            <li>Any {@code VkImageView} being sampled with #FILTER_LINEAR as a result of this command <b>must</b> be of a format which supports linear filtering, as specified by the #FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT flag in ##VkFormatProperties{@code ::linearTilingFeatures} (for a linear image) or ##VkFormatProperties{@code ::optimalTilingFeatures}(for an optimally tiled image) returned by {@code vkGetPhysicalDeviceFormatProperties}</li>
             <li>Image subresources used as attachments in the current render pass <b>must</b> not be accessed in any way other than as an attachment by this command.</li>
             <li>If the draw is recorded in a render pass instance with multiview enabled, the maximum instance index <b>must</b> be less than or equal to ##VkPhysicalDeviceMultiviewProperties{@code ::maxMultiviewInstanceIndex}.</li>
             <li>If {@code commandBuffer} is an unprotected command buffer, and any pipeline stage in the {@code VkPipeline} object currently bound to #PIPELINE_BIND_POINT_GRAPHICS reads from or writes to any image or buffer, that image or buffer <b>must</b> not be a protected image or protected buffer.</li>
@@ -324,12 +324,12 @@ val NV_mesh_shader = "NVMeshShader".nativeClassVK("NV_mesh_shader", type = "devi
         </table>
         """,
 
-        VkCommandBuffer.IN("commandBuffer", "the command buffer into which the command is recorded."),
-        VkBuffer.IN("buffer", "the buffer containing draw parameters."),
-        VkDeviceSize.IN("offset", "the byte offset into {@code buffer} where parameters begin."),
-        VkBuffer.IN("countBuffer", "the buffer containing the draw count."),
-        VkDeviceSize.IN("countBufferOffset", "the byte offset into {@code countBuffer} where the draw count begins."),
-        uint32_t.IN("maxDrawCount", "specifies the maximum number of draws that will be executed. The actual number of executed draw calls is the minimum of the count specified in {@code countBuffer} and {@code maxDrawCount}."),
-        uint32_t.IN("stride", "the byte stride between successive sets of draw parameters.")
+        VkCommandBuffer("commandBuffer", "the command buffer into which the command is recorded."),
+        VkBuffer("buffer", "the buffer containing draw parameters."),
+        VkDeviceSize("offset", "the byte offset into {@code buffer} where parameters begin."),
+        VkBuffer("countBuffer", "the buffer containing the draw count."),
+        VkDeviceSize("countBufferOffset", "the byte offset into {@code countBuffer} where the draw count begins."),
+        uint32_t("maxDrawCount", "specifies the maximum number of draws that will be executed. The actual number of executed draw calls is the minimum of the count specified in {@code countBuffer} and {@code maxDrawCount}."),
+        uint32_t("stride", "the byte stride between successive sets of draw parameters.")
     )
 }

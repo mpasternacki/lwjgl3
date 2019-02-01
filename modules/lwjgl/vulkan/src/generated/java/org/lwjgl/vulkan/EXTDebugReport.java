@@ -402,7 +402,7 @@ public class EXTDebugReport {
      * <p>{@link VkAllocationCallbacks}</p>
      *
      * @param instance   the instance where the callback was created.
-     * @param callback   the {@code VkDebugReportCallbackEXT} object to destroy. {@code callback} is an externally synchronized object and <b>must</b> not be used on more than one thread at a time. This means that {@link #vkDestroyDebugReportCallbackEXT DestroyDebugReportCallbackEXT} <b>must</b> not be called when a callback is active.
+     * @param callback   the {@code VkDebugReportCallbackEXT} object to destroy. {@code callback} is an externally synchronized object and <b>must</b> not be used on more than one thread at a time. This means that {@code vkDestroyDebugReportCallbackEXT} <b>must</b> not be called when a callback is active.
      * @param pAllocator controls host memory allocation as described in the <a target="_blank" href="https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html#memory-allocation">Memory Allocation</a> chapter.
      */
     public static void vkDestroyDebugReportCallbackEXT(VkInstance instance, @NativeType("VkDebugReportCallbackEXT") long callback, @Nullable @NativeType("VkAllocationCallbacks const *") VkAllocationCallbacks pAllocator) {
@@ -529,9 +529,11 @@ public class EXTDebugReport {
     public static void vkDebugReportMessageEXT(VkInstance instance, @NativeType("VkDebugReportFlagsEXT") int flags, @NativeType("VkDebugReportObjectTypeEXT") int objectType, @NativeType("uint64_t") long object, @NativeType("size_t") long location, @NativeType("int32_t") int messageCode, @NativeType("char const *") CharSequence pLayerPrefix, @NativeType("char const *") CharSequence pMessage) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer pLayerPrefixEncoded = stack.UTF8(pLayerPrefix);
-            ByteBuffer pMessageEncoded = stack.UTF8(pMessage);
-            nvkDebugReportMessageEXT(instance, flags, objectType, object, location, messageCode, memAddress(pLayerPrefixEncoded), memAddress(pMessageEncoded));
+            stack.nUTF8(pLayerPrefix, true);
+            long pLayerPrefixEncoded = stack.getPointerAddress();
+            stack.nUTF8(pMessage, true);
+            long pMessageEncoded = stack.getPointerAddress();
+            nvkDebugReportMessageEXT(instance, flags, objectType, object, location, messageCode, pLayerPrefixEncoded, pMessageEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }

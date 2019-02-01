@@ -24,7 +24,7 @@ import static org.lwjgl.system.Pointer.*;
 public class BGFX {
 
     /** API version */
-    public static final int BGFX_API_VERSION = 84;
+    public static final int BGFX_API_VERSION = 90;
 
     /** Invalid handle */
     public static final short BGFX_INVALID_HANDLE = (short)0xFFFF;
@@ -422,6 +422,11 @@ public class BGFX {
         BGFX_SUBMIT_EYE_MASK       = 0x3,
         BGFX_SUBMIT_RESERVED_SHIFT = 7,
         BGFX_SUBMIT_RESERVED_MASK  = (byte)0x80;
+
+    /** Resolve flags. */
+    public static final byte
+        BGFX_RESOLVE_NONE          = 0x0,
+        BGFX_RESOLVE_AUTO_GEN_MIPS = 0x1;
 
     /** PCI */
     public static final short
@@ -2123,8 +2128,9 @@ public class BGFX {
     public static void bgfx_dbg_text_printf(@NativeType("uint16_t") int _x, @NativeType("uint16_t") int _y, @NativeType("uint8_t") int _attr, @NativeType("char const *") CharSequence _format) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _formatEncoded = stack.ASCII(_format);
-            nbgfx_dbg_text_printf((short)_x, (short)_y, (byte)_attr, memAddress(_formatEncoded));
+            stack.nASCII(_format, true);
+            long _formatEncoded = stack.getPointerAddress();
+            nbgfx_dbg_text_printf((short)_x, (short)_y, (byte)_attr, _formatEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -2169,8 +2175,9 @@ public class BGFX {
     public static void bgfx_dbg_text_vprintf(@NativeType("uint16_t") int _x, @NativeType("uint16_t") int _y, @NativeType("uint8_t") int _attr, @NativeType("char const *") CharSequence _format, @NativeType("va_list") long _argList) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _formatEncoded = stack.ASCII(_format);
-            nbgfx_dbg_text_vprintf((short)_x, (short)_y, (byte)_attr, memAddress(_formatEncoded), _argList);
+            stack.nASCII(_format, true);
+            long _formatEncoded = stack.getPointerAddress();
+            nbgfx_dbg_text_vprintf((short)_x, (short)_y, (byte)_attr, _formatEncoded, _argList);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -2655,8 +2662,9 @@ public class BGFX {
     public static void bgfx_set_shader_name(@NativeType("bgfx_shader_handle_t") short _handle, @NativeType("char const *") CharSequence _name) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _nameEncoded = stack.UTF8(_name, false);
-            nbgfx_set_shader_name(_handle, memAddress(_nameEncoded), _nameEncoded.remaining());
+            int _nameEncodedLength = stack.nUTF8(_name, false);
+            long _nameEncoded = stack.getPointerAddress();
+            nbgfx_set_shader_name(_handle, _nameEncoded, _nameEncodedLength);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -3099,8 +3107,9 @@ public class BGFX {
     public static void bgfx_set_texture_name(@NativeType("bgfx_texture_handle_t") short _handle, @NativeType("char const *") CharSequence _name) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _nameEncoded = stack.UTF8(_name, false);
-            nbgfx_set_texture_name(_handle, memAddress(_nameEncoded), _nameEncoded.remaining());
+            int _nameEncodedLength = stack.nUTF8(_name, false);
+            long _nameEncoded = stack.getPointerAddress();
+            nbgfx_set_texture_name(_handle, _nameEncoded, _nameEncodedLength);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -3368,8 +3377,9 @@ public class BGFX {
     public static short bgfx_create_uniform(@NativeType("char const *") CharSequence _name, @NativeType("bgfx_uniform_type_t") int _type, @NativeType("uint16_t") int _num) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _nameEncoded = stack.ASCII(_name);
-            return nbgfx_create_uniform(memAddress(_nameEncoded), _type, (short)_num);
+            stack.nASCII(_name, true);
+            long _nameEncoded = stack.getPointerAddress();
+            return nbgfx_create_uniform(_nameEncoded, _type, (short)_num);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -3523,8 +3533,9 @@ public class BGFX {
     public static void bgfx_set_view_name(@NativeType("bgfx_view_id_t") int _id, @NativeType("char const *") CharSequence _name) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _nameEncoded = stack.ASCII(_name);
-            nbgfx_set_view_name((short)_id, memAddress(_nameEncoded));
+            stack.nASCII(_name, true);
+            long _nameEncoded = stack.getPointerAddress();
+            nbgfx_set_view_name((short)_id, _nameEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -3829,8 +3840,9 @@ public class BGFX {
     public static void bgfx_set_marker(@NativeType("char const *") CharSequence _marker) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _markerEncoded = stack.ASCII(_marker);
-            nbgfx_set_marker(memAddress(_markerEncoded));
+            stack.nASCII(_marker, true);
+            long _markerEncoded = stack.getPointerAddress();
+            nbgfx_set_marker(_markerEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -4327,7 +4339,7 @@ public class BGFX {
      * @param _depth         depth for sorting
      * @param _preserveState preserve internal draw state for next draw call submit
      */
-    public static void bgfx_submit(@NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("int32_t") int _depth, @NativeType("bool") boolean _preserveState) {
+    public static void bgfx_submit(@NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("uint32_t") int _depth, @NativeType("bool") boolean _preserveState) {
         nbgfx_submit((short)_id, _handle, _depth, _preserveState);
     }
 
@@ -4348,7 +4360,7 @@ public class BGFX {
      * @param _depth          depth for sorting
      * @param _preserveState  preserve internal draw state for next draw call submit
      */
-    public static void bgfx_submit_occlusion_query(@NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _program, @NativeType("bgfx_occlusion_query_handle_t") short _occlusionQuery, @NativeType("int32_t") int _depth, @NativeType("bool") boolean _preserveState) {
+    public static void bgfx_submit_occlusion_query(@NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _program, @NativeType("bgfx_occlusion_query_handle_t") short _occlusionQuery, @NativeType("uint32_t") int _depth, @NativeType("bool") boolean _preserveState) {
         nbgfx_submit_occlusion_query((short)_id, _program, _occlusionQuery, _depth, _preserveState);
     }
 
@@ -4371,7 +4383,7 @@ public class BGFX {
      * @param _depth          depth for sorting
      * @param _preserveState  preserve internal draw state for next draw call submit
      */
-    public static void bgfx_submit_indirect(@NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("bgfx_indirect_buffer_handle_t") short _indirectHandle, @NativeType("uint16_t") int _start, @NativeType("uint16_t") int _num, @NativeType("int32_t") int _depth, @NativeType("bool") boolean _preserveState) {
+    public static void bgfx_submit_indirect(@NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("bgfx_indirect_buffer_handle_t") short _indirectHandle, @NativeType("uint16_t") int _start, @NativeType("uint16_t") int _num, @NativeType("uint32_t") int _depth, @NativeType("bool") boolean _preserveState) {
         nbgfx_submit_indirect((short)_id, _handle, _indirectHandle, (short)_start, (short)_num, _depth, _preserveState);
     }
 
@@ -4610,8 +4622,9 @@ public class BGFX {
     public static void bgfx_encoder_set_marker(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("char const *") CharSequence _marker) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _markerEncoded = stack.ASCII(_marker);
-            nbgfx_encoder_set_marker(_encoder, memAddress(_markerEncoded));
+            stack.nASCII(_marker, true);
+            long _markerEncoded = stack.getPointerAddress();
+            nbgfx_encoder_set_marker(_encoder, _markerEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -5200,7 +5213,7 @@ public class BGFX {
      * @param _depth         depth for sorting
      * @param _preserveState preserve internal draw state for next draw call submit
      */
-    public static void bgfx_encoder_submit(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("int32_t") int _depth, @NativeType("bool") boolean _preserveState) {
+    public static void bgfx_encoder_submit(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("uint32_t") int _depth, @NativeType("bool") boolean _preserveState) {
         nbgfx_encoder_submit(_encoder, (short)_id, _handle, _depth, _preserveState);
     }
 
@@ -5225,7 +5238,7 @@ public class BGFX {
      * @param _depth          depth for sorting
      * @param _preserveState  preserve internal draw state for next draw call submit
      */
-    public static void bgfx_encoder_submit_occlusion_query(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _program, @NativeType("bgfx_occlusion_query_handle_t") short _occlusionQuery, @NativeType("int32_t") int _depth, @NativeType("bool") boolean _preserveState) {
+    public static void bgfx_encoder_submit_occlusion_query(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _program, @NativeType("bgfx_occlusion_query_handle_t") short _occlusionQuery, @NativeType("uint32_t") int _depth, @NativeType("bool") boolean _preserveState) {
         nbgfx_encoder_submit_occlusion_query(_encoder, (short)_id, _program, _occlusionQuery, _depth, _preserveState);
     }
 
@@ -5252,7 +5265,7 @@ public class BGFX {
      * @param _depth          depth for sorting
      * @param _preserveState  preserve internal draw state for next draw call submit
      */
-    public static void bgfx_encoder_submit_indirect(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("bgfx_indirect_buffer_handle_t") short _indirectHandle, @NativeType("uint16_t") int _start, @NativeType("uint16_t") int _num, @NativeType("int32_t") int _depth, @NativeType("bool") boolean _preserveState) {
+    public static void bgfx_encoder_submit_indirect(@NativeType("struct bgfx_encoder_s *") long _encoder, @NativeType("bgfx_view_id_t") int _id, @NativeType("bgfx_program_handle_t") short _handle, @NativeType("bgfx_indirect_buffer_handle_t") short _indirectHandle, @NativeType("uint16_t") int _start, @NativeType("uint16_t") int _num, @NativeType("uint32_t") int _depth, @NativeType("bool") boolean _preserveState) {
         nbgfx_encoder_submit_indirect(_encoder, (short)_id, _handle, _indirectHandle, (short)_start, (short)_num, _depth, _preserveState);
     }
 
@@ -5531,8 +5544,9 @@ public class BGFX {
     public static void bgfx_request_screen_shot(@NativeType("bgfx_frame_buffer_handle_t") short _handle, @NativeType("char const *") CharSequence _filePath) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer _filePathEncoded = stack.ASCII(_filePath);
-            nbgfx_request_screen_shot(_handle, memAddress(_filePathEncoded));
+            stack.nASCII(_filePath, true);
+            long _filePathEncoded = stack.getPointerAddress();
+            nbgfx_request_screen_shot(_handle, _filePathEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }

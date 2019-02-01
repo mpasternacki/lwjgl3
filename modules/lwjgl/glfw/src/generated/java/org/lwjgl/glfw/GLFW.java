@@ -595,6 +595,9 @@ public class GLFW {
      * <li>{@link #GLFW_SCALE_TO_MONITOR SCALE_TO_MONITOR} - 
      * {@code WindowHint}: Specifies whether the window content area should be resized based on the monitor content scale of any monitor it is placed on.
      * This includes the initial placement when the window is created. Possible values are {@link #GLFW_TRUE TRUE} and {@link #GLFW_FALSE FALSE}.
+     * 
+     * <p>This hint only has an effect on platforms where screen coordinates and pixels always map 1:1 such as Windows and X11. On platforms like macOS the
+     * resolution of the framebuffer is changed independently of the window size.</p>
      * </li>
      * </ul>
      */
@@ -1647,8 +1650,9 @@ public class GLFW {
     public static void glfwWindowHintString(int hint, @NativeType("char const *") CharSequence value) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer valueEncoded = stack.UTF8(value);
-            nglfwWindowHintString(hint, memAddress(valueEncoded));
+            stack.nUTF8(value, true);
+            long valueEncoded = stack.getPointerAddress();
+            nglfwWindowHintString(hint, valueEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -1838,8 +1842,9 @@ public class GLFW {
         EventLoop.OffScreen.check();
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer titleEncoded = stack.UTF8(title);
-            return nglfwCreateWindow(width, height, memAddress(titleEncoded), monitor, share);
+            stack.nUTF8(title, true);
+            long titleEncoded = stack.getPointerAddress();
+            return nglfwCreateWindow(width, height, titleEncoded, monitor, share);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -1957,8 +1962,9 @@ public class GLFW {
     public static void glfwSetWindowTitle(@NativeType("GLFWwindow *") long window, @NativeType("char const *") CharSequence title) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer titleEncoded = stack.UTF8(title);
-            nglfwSetWindowTitle(window, memAddress(titleEncoded));
+            stack.nUTF8(title, true);
+            long titleEncoded = stack.getPointerAddress();
+            nglfwSetWindowTitle(window, titleEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -4216,8 +4222,9 @@ public class GLFW {
     public static boolean glfwUpdateGamepadMappings(@NativeType("char const *") CharSequence string) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer stringEncoded = stack.ASCII(string);
-            return nglfwUpdateGamepadMappings(memAddress(stringEncoded)) != 0;
+            stack.nASCII(string, true);
+            long stringEncoded = stack.getPointerAddress();
+            return nglfwUpdateGamepadMappings(stringEncoded) != 0;
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -4305,7 +4312,6 @@ public class GLFW {
      * 
      * <ul>
      * <li>This function must only be called from the main thread.</li>
-     * <li><b>Wayland</b>: Clipboard is currently unimplemented.</li>
      * </ul>
      *
      * @param window deprecated, any valid window or {@code NULL}.
@@ -4329,7 +4335,6 @@ public class GLFW {
      * 
      * <ul>
      * <li>This function must only be called from the main thread.</li>
-     * <li><b>Wayland</b>: Clipboard is currently unimplemented.</li>
      * </ul>
      *
      * @param window deprecated, any valid window or {@code NULL}.
@@ -4340,8 +4345,9 @@ public class GLFW {
     public static void glfwSetClipboardString(@NativeType("GLFWwindow *") long window, @NativeType("char const *") CharSequence string) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer stringEncoded = stack.UTF8(string);
-            nglfwSetClipboardString(window, memAddress(stringEncoded));
+            stack.nUTF8(string, true);
+            long stringEncoded = stack.getPointerAddress();
+            nglfwSetClipboardString(window, stringEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -4368,7 +4374,6 @@ public class GLFW {
      * <li>This function must only be called from the main thread.</li>
      * <li>The returned string is allocated and freed by GLFW.  You should not free it yourself.</li>
      * <li>The returned string is valid only until the next call to {@link #glfwGetClipboardString GetClipboardString} or {@link #glfwSetClipboardString SetClipboardString}.</li>
-     * <li><b>Wayland</b>: Clipboard is currently unimplemented.</li>
      * </ul></div>
      *
      * @param window deprecated, any valid window or {@code NULL}.
@@ -4626,8 +4631,9 @@ public class GLFW {
     public static boolean glfwExtensionSupported(@NativeType("char const *") CharSequence extension) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer extensionEncoded = stack.ASCII(extension);
-            return nglfwExtensionSupported(memAddress(extensionEncoded)) != 0;
+            stack.nASCII(extension, true);
+            long extensionEncoded = stack.getPointerAddress();
+            return nglfwExtensionSupported(extensionEncoded) != 0;
         } finally {
             stack.setPointer(stackPointer);
         }
@@ -4701,8 +4707,9 @@ public class GLFW {
     public static long glfwGetProcAddress(@NativeType("char const *") CharSequence procname) {
         MemoryStack stack = stackGet(); int stackPointer = stack.getPointer();
         try {
-            ByteBuffer procnameEncoded = stack.ASCII(procname);
-            return nglfwGetProcAddress(memAddress(procnameEncoded));
+            stack.nASCII(procname, true);
+            long procnameEncoded = stack.getPointerAddress();
+            return nglfwGetProcAddress(procnameEncoded);
         } finally {
             stack.setPointer(stackPointer);
         }

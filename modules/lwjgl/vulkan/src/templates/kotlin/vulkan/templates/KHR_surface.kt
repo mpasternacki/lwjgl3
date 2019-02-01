@@ -288,9 +288,9 @@ val KHR_surface = "KHRSurface".nativeClassVK("KHR_surface", type = "instance", p
         ##VkAllocationCallbacks
         """,
 
-        VkInstance.IN("instance", "the instance used to create the surface."),
-        VkSurfaceKHR.IN("surface", "the surface to destroy."),
-        nullable..VkAllocationCallbacks.const.p.IN("pAllocator", "the allocator used for host memory allocated for the surface object when there is no more specific allocator available (see <a target=\"_blank\" href=\"https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\\#memory-allocation\">Memory Allocation</a>).")
+        VkInstance("instance", "the instance used to create the surface."),
+        VkSurfaceKHR("surface", "the surface to destroy."),
+        nullable..VkAllocationCallbacks.const.p("pAllocator", "the allocator used for host memory allocated for the surface object when there is no more specific allocator available (see <a target=\"_blank\" href=\"https://www.khronos.org/registry/vulkan/specs/1.0-extensions/html/vkspec.html\\#memory-allocation\">Memory Allocation</a>).")
     )
 
     VkResult(
@@ -310,7 +310,7 @@ val KHR_surface = "KHRSurface".nativeClassVK("KHR_surface", type = "instance", p
 
         <h5>Valid Usage</h5>
         <ul>
-            <li>{@code queueFamilyIndex} <b>must</b> be less than {@code pQueueFamilyPropertyCount} returned by #GetPhysicalDeviceQueueFamilyProperties() for the given {@code physicalDevice}</li>
+            <li>{@code queueFamilyIndex} <b>must</b> be less than {@code pQueueFamilyPropertyCount} returned by {@code vkGetPhysicalDeviceQueueFamilyProperties} for the given {@code physicalDevice}</li>
         </ul>
 
         <h5>Valid Usage (Implicit)</h5>
@@ -337,10 +337,10 @@ val KHR_surface = "KHRSurface".nativeClassVK("KHR_surface", type = "instance", p
         </dl>
         """,
 
-        VkPhysicalDevice.IN("physicalDevice", "the physical device."),
-        uint32_t.IN("queueFamilyIndex", "the queue family."),
-        VkSurfaceKHR.IN("surface", "the surface."),
-        Check(1)..VkBool32.p.OUT("pSupported", "a pointer to a {@code VkBool32}, which is set to #TRUE to indicate support, and #FALSE otherwise.")
+        VkPhysicalDevice("physicalDevice", "the physical device."),
+        uint32_t("queueFamilyIndex", "the queue family."),
+        VkSurfaceKHR("surface", "the surface."),
+        Check(1)..VkBool32.p("pSupported", "a pointer to a {@code VkBool32}, which is set to #TRUE to indicate support, and #FALSE otherwise.")
     )
 
     VkResult(
@@ -384,9 +384,9 @@ val KHR_surface = "KHRSurface".nativeClassVK("KHR_surface", type = "instance", p
         ##VkSurfaceCapabilitiesKHR
         """,
 
-        VkPhysicalDevice.IN("physicalDevice", "the physical device that will be associated with the swapchain to be created, as described for #CreateSwapchainKHR()."),
-        VkSurfaceKHR.IN("surface", "the surface that will be associated with the swapchain."),
-        VkSurfaceCapabilitiesKHR.p.OUT("pSurfaceCapabilities", "a pointer to an instance of the ##VkSurfaceCapabilitiesKHR structure in which the capabilities are returned.")
+        VkPhysicalDevice("physicalDevice", "the physical device that will be associated with the swapchain to be created, as described for #CreateSwapchainKHR()."),
+        VkSurfaceKHR("surface", "the surface that will be associated with the swapchain."),
+        VkSurfaceCapabilitiesKHR.p("pSurfaceCapabilities", "a pointer to an instance of the ##VkSurfaceCapabilitiesKHR structure in which the capabilities are returned.")
     )
 
     VkResult(
@@ -436,10 +436,10 @@ val KHR_surface = "KHRSurface".nativeClassVK("KHR_surface", type = "instance", p
         ##VkSurfaceFormatKHR
         """,
 
-        VkPhysicalDevice.IN("physicalDevice", "the physical device that will be associated with the swapchain to be created, as described for #CreateSwapchainKHR()."),
-        VkSurfaceKHR.IN("surface", "the surface that will be associated with the swapchain."),
-        AutoSize("pSurfaceFormats")..Check(1)..uint32_t.p.INOUT("pSurfaceFormatCount", "a pointer to an integer related to the number of format pairs available or queried, as described below."),
-        nullable..VkSurfaceFormatKHR.p.OUT("pSurfaceFormats", "either {@code NULL} or a pointer to an array of ##VkSurfaceFormatKHR structures.")
+        VkPhysicalDevice("physicalDevice", "the physical device that will be associated with the swapchain to be created, as described for #CreateSwapchainKHR()."),
+        VkSurfaceKHR("surface", "the surface that will be associated with the swapchain."),
+        AutoSize("pSurfaceFormats")..Check(1)..uint32_t.p("pSurfaceFormatCount", "a pointer to an integer related to the number of format pairs available or queried, as described below."),
+        nullable..VkSurfaceFormatKHR.p("pSurfaceFormats", "either {@code NULL} or a pointer to an array of ##VkSurfaceFormatKHR structures.")
     )
 
     VkResult(
@@ -486,9 +486,9 @@ val KHR_surface = "KHRSurface".nativeClassVK("KHR_surface", type = "instance", p
         </dl>
         """,
 
-        VkPhysicalDevice.IN("physicalDevice", "the physical device that will be associated with the swapchain to be created, as described for #CreateSwapchainKHR()."),
-        VkSurfaceKHR.IN("surface", "the surface that will be associated with the swapchain."),
-        AutoSize("pPresentModes")..Check(1)..uint32_t.p.INOUT("pPresentModeCount", "a pointer to an integer related to the number of presentation modes available or queried, as described below."),
-        nullable..VkPresentModeKHR.p.OUT("pPresentModes", "either {@code NULL} or a pointer to an array of {@code VkPresentModeKHR} values, indicating the supported presentation modes.")
+        VkPhysicalDevice("physicalDevice", "the physical device that will be associated with the swapchain to be created, as described for #CreateSwapchainKHR()."),
+        VkSurfaceKHR("surface", "the surface that will be associated with the swapchain."),
+        AutoSize("pPresentModes")..Check(1)..uint32_t.p("pPresentModeCount", "a pointer to an integer related to the number of presentation modes available or queried, as described below."),
+        nullable..VkPresentModeKHR.p("pPresentModes", "either {@code NULL} or a pointer to an array of {@code VkPresentModeKHR} values, indicating the supported presentation modes.")
     )
 }
