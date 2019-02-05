@@ -172,8 +172,8 @@
         </forEachModule>
     </target>
 
-    <target name="all" description="Builds LWJGL and runs the tests" depends="compile-templates"/>
-    <!-- <target name="all" description="Builds LWJGL and runs the tests" depends="compile-templates, tests"/> -->
+    <!-- <target name="all" description="Builds LWJGL and runs the tests" depends="compile-templates"/> -->
+    <target name="all" description="Builds LWJGL and runs the tests" depends="compile-templates, tests"/>
 
     <target name="-compile-generator" depends="init">
         <local name="generator-uptodate"/>
@@ -443,267 +443,267 @@
         <antcall target="compile-native-platform"/>
     </target>
 
-    <!-- <target name="compile-tests" description="Compiles the LWJGL test suite" depends="compile"> -->
-    <!--     <mkdir dir="${bin.test}"/> -->
-    <!--     <forEachModule> -->
-    <!--         <local name="hasTests"/> -->
-    <!--         <available property="hasTests" file="${module.lwjgl}/${module}/src/test/java" type="dir"/> -->
+    <target name="compile-tests" description="Compiles the LWJGL test suite" depends="compile">
+        <mkdir dir="${bin.test}"/>
+        <forEachModule>
+            <local name="hasTests"/>
+            <available property="hasTests" file="${module.lwjgl}/${module}/src/test/java" type="dir"/>
 
-    <!--         <lwjgl.javac -->
-    <!--             destdir="${bin.test}" -->
-    <!--             srcdir="${module.lwjgl}/${module}/src/test/java" -->
-    <!--             includes="**" -->
-    <!--             taskname="javac: ${module} tests" -->
-    <!--             if:set="hasTests" -->
-    <!--         > -->
-    <!--             <classpath> -->
-    <!--                 <pathelement path="${bin.lwjgl}/core"/> -->
-    <!--                 <pathelement path="${bin.lwjgl}/${module}"/> -->
-    <!--                 <pathelement path="${lib}/java/jsr305.jar"/> -->
-    <!--                 <pathelement path="${lib}/java/testng.jar"/> -->
-    <!--             </classpath> -->
-    <!--         </lwjgl.javac> -->
-    <!--     </forEachModule> -->
+            <lwjgl.javac
+                destdir="${bin.test}"
+                srcdir="${module.lwjgl}/${module}/src/test/java"
+                includes="**"
+                taskname="javac: ${module} tests"
+                if:set="hasTests"
+            >
+                <classpath>
+                    <pathelement path="${bin.lwjgl}/core"/>
+                    <pathelement path="${bin.lwjgl}/${module}"/>
+                    <pathelement path="${lib}/java/jsr305.jar"/>
+                    <pathelement path="${lib}/java/testng.jar"/>
+                </classpath>
+            </lwjgl.javac>
+        </forEachModule>
 
-    <!--     <local name="test.bgfx"/> -->
-    <!--     <condition property="test.bgfx"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.bgfx}"/> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.bgfx"/>
+        <condition property="test.bgfx">
+            <and>
+                <istrue value="${binding.bgfx}"/>
+                <istrue value="${binding.glfw}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.egl"/> -->
-    <!--     <condition property="test.egl"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.egl}"/> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--             <istrue value="${binding.opengles}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.egl"/>
+        <condition property="test.egl">
+            <and>
+                <istrue value="${binding.egl}"/>
+                <istrue value="${binding.glfw}"/>
+                <istrue value="${binding.opengles}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.glfw"/> -->
-    <!--     <condition property="test.glfw"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--             <istrue value="${binding.opengl}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.glfw"/>
+        <condition property="test.glfw">
+            <and>
+                <istrue value="${binding.glfw}"/>
+                <istrue value="${binding.opengl}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.jawt"/> -->
-    <!--     <condition property="test.jawt"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.jawt}"/> -->
-    <!--             <istrue value="${binding.opengl}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.jawt"/>
+        <condition property="test.jawt">
+            <and>
+                <istrue value="${binding.jawt}"/>
+                <istrue value="${binding.opengl}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.nanovg"/> -->
-    <!--     <condition property="test.nanovg"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${test.glfw}"/> -->
-    <!--             <istrue value="${binding.nanovg}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.nanovg"/>
+        <condition property="test.nanovg">
+            <and>
+                <istrue value="${test.glfw}"/>
+                <istrue value="${binding.nanovg}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.nuklear"/> -->
-    <!--     <condition property="test.nuklear"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${test.glfw}"/> -->
-    <!--             <istrue value="${binding.nuklear}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.nuklear"/>
+        <condition property="test.nuklear">
+            <and>
+                <istrue value="${test.glfw}"/>
+                <istrue value="${binding.nuklear}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.nfd"/> -->
-    <!--     <condition property="test.nfd"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${test.glfw}"/> -->
-    <!--             <istrue value="${binding.nfd}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.nfd"/>
+        <condition property="test.nfd">
+            <and>
+                <istrue value="${test.glfw}"/>
+                <istrue value="${binding.nfd}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.openal"/> -->
-    <!--     <condition property="test.openal"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.openal}"/> -->
-    <!--             <istrue value="${binding.stb}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.openal"/>
+        <condition property="test.openal">
+            <and>
+                <istrue value="${binding.openal}"/>
+                <istrue value="${binding.stb}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.opencl"/> -->
-    <!--     <condition property="test.opencl"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--             <istrue value="${binding.opencl}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.opencl"/>
+        <condition property="test.opencl">
+            <and>
+                <istrue value="${binding.glfw}"/>
+                <istrue value="${binding.opencl}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.par"/> -->
-    <!--     <condition property="test.par"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--             <istrue value="${binding.nfd}"/> -->
-    <!--             <istrue value="${binding.par}"/> -->
-    <!--             <istrue value="${binding.stb}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.par"/>
+        <condition property="test.par">
+            <and>
+                <istrue value="${binding.glfw}"/>
+                <istrue value="${binding.nfd}"/>
+                <istrue value="${binding.par}"/>
+                <istrue value="${binding.stb}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.stb"/> -->
-    <!--     <condition property="test.stb"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.stb}"/> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.stb"/>
+        <condition property="test.stb">
+            <and>
+                <istrue value="${binding.stb}"/>
+                <istrue value="${binding.glfw}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.tinyexr"/> -->
-    <!--     <condition property="test.tinyexr"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${test.glfw}"/> -->
-    <!--             <istrue value="${binding.tinyexr}"/> -->
-    <!--             <istrue value="${binding.tinyfd}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.tinyexr"/>
+        <condition property="test.tinyexr">
+            <and>
+                <istrue value="${test.glfw}"/>
+                <istrue value="${binding.tinyexr}"/>
+                <istrue value="${binding.tinyfd}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.tinyfd"/> -->
-    <!--     <condition property="test.tinyfd"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${test.glfw}"/> -->
-    <!--             <istrue value="${binding.tinyfd}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.tinyfd"/>
+        <condition property="test.tinyfd">
+            <and>
+                <istrue value="${test.glfw}"/>
+                <istrue value="${binding.tinyfd}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.tootle"/> -->
-    <!--     <condition property="test.tootle"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.assimp}"/> -->
-    <!--             <istrue value="${binding.par}"/> -->
-    <!--             <istrue value="${binding.tootle}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.tootle"/>
+        <condition property="test.tootle">
+            <and>
+                <istrue value="${binding.assimp}"/>
+                <istrue value="${binding.par}"/>
+                <istrue value="${binding.tootle}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.vulkan"/> -->
-    <!--     <condition property="test.vulkan"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${binding.glfw}"/> -->
-    <!--             <istrue value="${binding.vulkan}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.vulkan"/>
+        <condition property="test.vulkan">
+            <and>
+                <istrue value="${binding.glfw}"/>
+                <istrue value="${binding.vulkan}"/>
+            </and>
+        </condition>
 
-    <!--     <local name="test.yoga"/> -->
-    <!--     <condition property="test.yoga"> -->
-    <!--         <and> -->
-    <!--             <istrue value="${test.glfw}"/> -->
-    <!--             <istrue value="${binding.stb}"/> -->
-    <!--             <istrue value="${binding.yoga}"/> -->
-    <!--         </and> -->
-    <!--     </condition> -->
+        <local name="test.yoga"/>
+        <condition property="test.yoga">
+            <and>
+                <istrue value="${test.glfw}"/>
+                <istrue value="${binding.stb}"/>
+                <istrue value="${binding.yoga}"/>
+            </and>
+        </condition>
 
-    <!--     <mkdir dir="${bin.samples}"/> -->
-    <!--     <lwjgl.javac srcdir="modules/samples/src/test/java" destdir="${bin.samples}" taskname="javac: Samples"> -->
-    <!--         <classpath> -->
-    <!--             <pathelement path="${module.classpath}"/> -->
-    <!--             <pathelement path="${bin.test}"/> -->
-    <!--             <pathelement path="${lib}/java/jsr305.jar"/> -->
-    <!--             <pathelement path="${lib}/java/joml.jar"/> -->
-    <!--         </classpath> -->
+        <mkdir dir="${bin.samples}"/>
+        <lwjgl.javac srcdir="modules/samples/src/test/java" destdir="${bin.samples}" taskname="javac: Samples">
+            <classpath>
+                <pathelement path="${module.classpath}"/>
+                <pathelement path="${bin.test}"/>
+                <pathelement path="${lib}/java/jsr305.jar"/>
+                <pathelement path="${lib}/java/joml.jar"/>
+            </classpath>
 
-    <!--         <!-\- Demos -\-> -->
-    <!--         <include name="org/lwjgl/demo/assimp/**" if:true="${binding.assimp}"/> -->
-    <!--         <include name="org/lwjgl/demo/bgfx/**" if:set="test.bgfx"/> -->
-    <!--         <include name="org/lwjgl/demo/egl/**" if:set="test.egl"/> -->
-    <!--         <include name="org/lwjgl/demo/glfw/**" if:set="test.glfw"/> -->
-    <!--         <include name="org/lwjgl/demo/nanovg/**" if:set="test.nanovg"/> -->
-    <!--         <include name="org/lwjgl/demo/nuklear/**" if:set="test.nuklear"/> -->
+            <!-- Demos -->
+            <include name="org/lwjgl/demo/assimp/**" if:true="${binding.assimp}"/>
+            <include name="org/lwjgl/demo/bgfx/**" if:set="test.bgfx"/>
+            <include name="org/lwjgl/demo/egl/**" if:set="test.egl"/>
+            <include name="org/lwjgl/demo/glfw/**" if:set="test.glfw"/>
+            <include name="org/lwjgl/demo/nanovg/**" if:set="test.nanovg"/>
+            <include name="org/lwjgl/demo/nuklear/**" if:set="test.nuklear"/>
 
-    <!--         <include name="org/lwjgl/demo/openal/**" if:true="${binding.openal}"/> -->
-    <!--         <exclude name="org/lwjgl/demo/openal/ALCDemo.java" unless:set="test.openal"/> -->
-    <!--         <exclude name="org/lwjgl/demo/openal/EFXTest.java" unless:set="test.openal"/> -->
-    <!--         <exclude name="org/lwjgl/demo/openal/HRTFDemo.java" unless:set="test.openal"/> -->
+            <include name="org/lwjgl/demo/openal/**" if:true="${binding.openal}"/>
+            <exclude name="org/lwjgl/demo/openal/ALCDemo.java" unless:set="test.openal"/>
+            <exclude name="org/lwjgl/demo/openal/EFXTest.java" unless:set="test.openal"/>
+            <exclude name="org/lwjgl/demo/openal/HRTFDemo.java" unless:set="test.openal"/>
 
-    <!--         <include name="org/lwjgl/demo/opencl/**" if:set="test.opencl"/> -->
-    <!--         <include name="org/lwjgl/demo/opencl/CLDemo.java" if:true="${binding.opencl}"/> -->
+            <include name="org/lwjgl/demo/opencl/**" if:set="test.opencl"/>
+            <include name="org/lwjgl/demo/opencl/CLDemo.java" if:true="${binding.opencl}"/>
 
-    <!--         <include name="org/lwjgl/demo/opengl/**" if:true="${binding.opengl}"/> -->
+            <include name="org/lwjgl/demo/opengl/**" if:true="${binding.opengl}"/>
 
-    <!--         <include name="org/lwjgl/demo/openvr/**" if:true="${binding.openvr}"/> -->
-    <!--         <include name="org/lwjgl/demo/ovr/**" if:true="${binding.ovr}"/> -->
-    <!--         <include name="org/lwjgl/demo/stb/**" if:set="test.stb"/> -->
+            <include name="org/lwjgl/demo/openvr/**" if:true="${binding.openvr}"/>
+            <include name="org/lwjgl/demo/ovr/**" if:true="${binding.ovr}"/>
+            <include name="org/lwjgl/demo/stb/**" if:set="test.stb"/>
 
-    <!--         <include name="org/lwjgl/demo/system/jawt/**" if:set="test.jawt"/> -->
+            <include name="org/lwjgl/demo/system/jawt/**" if:set="test.jawt"/>
 
-    <!--         <include name="org/lwjgl/demo/util/*.java"/> -->
-    <!--         <include name="org/lwjgl/demo/util/lmdb/**" if:true="${binding.lmdb}"/> -->
-    <!--         <include name="org/lwjgl/demo/util/lz4/**" if:true="${binding.lz4}"/> -->
-    <!--         <include name="org/lwjgl/demo/util/nfd/**" if:set="test.nfd"/> -->
-    <!--         <include name="org/lwjgl/demo/util/par/**" if:set="test.par"/> -->
-    <!--         <include name="org/lwjgl/demo/util/tinyexr/**" if:set="test.tinyexr"/> -->
-    <!--         <include name="org/lwjgl/demo/util/tinyfd/**" if:set="test.tinyfd"/> -->
-    <!--         <include name="org/lwjgl/demo/util/tootle/**" if:set="test.tootle"/> -->
-    <!--         <include name="org/lwjgl/demo/util/xxhash/**" if:true="${binding.xxhash}"/> -->
-    <!--         <include name="org/lwjgl/demo/util/yoga/**" if:set="test.yoga"/> -->
-    <!--         <include name="org/lwjgl/demo/util/zstd/**" if:true="${binding.zstd}"/> -->
+            <include name="org/lwjgl/demo/util/*.java"/>
+            <include name="org/lwjgl/demo/util/lmdb/**" if:true="${binding.lmdb}"/>
+            <include name="org/lwjgl/demo/util/lz4/**" if:true="${binding.lz4}"/>
+            <include name="org/lwjgl/demo/util/nfd/**" if:set="test.nfd"/>
+            <include name="org/lwjgl/demo/util/par/**" if:set="test.par"/>
+            <include name="org/lwjgl/demo/util/tinyexr/**" if:set="test.tinyexr"/>
+            <include name="org/lwjgl/demo/util/tinyfd/**" if:set="test.tinyfd"/>
+            <include name="org/lwjgl/demo/util/tootle/**" if:set="test.tootle"/>
+            <include name="org/lwjgl/demo/util/xxhash/**" if:true="${binding.xxhash}"/>
+            <include name="org/lwjgl/demo/util/yoga/**" if:set="test.yoga"/>
+            <include name="org/lwjgl/demo/util/zstd/**" if:true="${binding.zstd}"/>
 
-    <!--         <include name="org/lwjgl/demo/vulkan/**" if:set="test.vulkan"/> -->
-    <!--     </lwjgl.javac> -->
-    <!-- </target> -->
+            <include name="org/lwjgl/demo/vulkan/**" if:set="test.vulkan"/>
+        </lwjgl.javac>
+    </target>
 
-    <!-- <target name="tests" description="Runs the LWJGL test suite" depends="compile-tests, compile-native"> -->
-    <!--     <testng outputDir="${bin.test.html}" taskname="Tests"> -->
-    <!--         <classpath> -->
-    <!--             <pathelement path="${module.classpath}"/> -->
-    <!--             <pathelement path="${bin.test}"/> -->
-    <!--             <pathelement path="${lib}/java/jcommander.jar"/> -->
-    <!--         </classpath> -->
+    <target name="tests" description="Runs the LWJGL test suite" depends="compile-tests, compile-native">
+        <testng outputDir="${bin.test.html}" taskname="Tests">
+            <classpath>
+                <pathelement path="${module.classpath}"/>
+                <pathelement path="${bin.test}"/>
+                <pathelement path="${lib}/java/jcommander.jar"/>
+            </classpath>
 
-    <!--         <!-\-<jvmarg value="-Xcheck:jni"/>-\-> <!-\- SIMD fails with this (see -XX:+RestoreMXCSROnJNICall) -\-> -->
-    <!--         <jvmarg value="-ea"/> -->
-    <!--         <jvmarg value="-Dorg.lwjgl.util.Debug=true"/> -->
-    <!--         <jvmarg value="-Dorg.lwjgl.util.DebugAllocator=true"/> -->
-    <!--         <jvmarg value="-Djava.library.path=${lib}"/> -->
-    <!--         <jvmarg value="-XstartOnFirstThread" if:set="platform.macos"/> -->
-    <!--         <jvmarg value="-Xss256k"/> <!-\- for StackTest::testSOE -\-> -->
-    <!--         <jvmarg line="${jvmargs}" if:set="jvmargs"/> -->
+            <!--<jvmarg value="-Xcheck:jni"/>--> <!-- SIMD fails with this (see -XX:+RestoreMXCSROnJNICall) -->
+            <jvmarg value="-ea"/>
+            <jvmarg value="-Dorg.lwjgl.util.Debug=true"/>
+            <jvmarg value="-Dorg.lwjgl.util.DebugAllocator=true"/>
+            <jvmarg value="-Djava.library.path=${lib}"/>
+            <jvmarg value="-XstartOnFirstThread" if:set="platform.macos"/>
+            <jvmarg value="-Xss256k"/> <!-- for StackTest::testSOE -->
+            <jvmarg line="${jvmargs}" if:set="jvmargs"/>
 
-    <!--         <xmlfileset dir="${config}" includes="tests.xml,tests_${platform}.xml"/> -->
-    <!--     </testng> -->
-    <!-- </target> -->
+            <xmlfileset dir="${config}" includes="tests.xml,tests_${platform}.xml"/>
+        </testng>
+    </target>
 
-    <!-- <target name="demo" description="Runs an LWJGL demo" depends="compile-tests, compile-native, -update-assets"> -->
-    <!--     <fail message="Please use -Dclass=&lt;class&gt; to specify the demo main class to run." unless="class"/> -->
+    <target name="demo" description="Runs an LWJGL demo" depends="compile-tests, compile-native, -update-assets">
+        <fail message="Please use -Dclass=&lt;class&gt; to specify the demo main class to run." unless="class"/>
 
-    <!--     <local name="spawn"/> -->
-    <!--     <condition property="spawn" value="true" else="false"> -->
-    <!--         <isset property="jitwatch"/> -->
-    <!--     </condition> -->
+        <local name="spawn"/>
+        <condition property="spawn" value="true" else="false">
+            <isset property="jitwatch"/>
+        </condition>
 
-    <!--     <local name="failonerror"/> -->
-    <!--     <condition property="failonerror" value="false" else="true"> -->
-    <!--         <istrue value="${spawn}"/> -->
-    <!--     </condition> -->
+        <local name="failonerror"/>
+        <condition property="failonerror" value="false" else="true">
+            <istrue value="${spawn}"/>
+        </condition>
 
-    <!--     <java classname="${class}" fork="true" failonerror="${failonerror}" spawn="${spawn}" taskname="Demo"> -->
-    <!--         <classpath> -->
-    <!--             <pathelement path="${module.classpath}"/> -->
-    <!--             <pathelement path="${bin.samples}"/> -->
-    <!--             <pathelement path="${test.resources}"/> -->
-    <!--             <pathelement path="${lib}/java/testng.jar"/> -->
-    <!--             <pathelement path="${lib}/java/joml.jar"/> -->
-    <!--         </classpath> -->
+        <java classname="${class}" fork="true" failonerror="${failonerror}" spawn="${spawn}" taskname="Demo">
+            <classpath>
+                <pathelement path="${module.classpath}"/>
+                <pathelement path="${bin.samples}"/>
+                <pathelement path="${test.resources}"/>
+                <pathelement path="${lib}/java/testng.jar"/>
+                <pathelement path="${lib}/java/joml.jar"/>
+            </classpath>
 
-    <!--         <jvmarg value="-Djava.library.path=${lib}"/> -->
-    <!--         <jvmarg value="-XstartOnFirstThread" if:set="platform.macos"/> -->
-    <!--         <!-\-<jvmarg value="-Xcheck:jni"/>-\-> -->
+            <jvmarg value="-Djava.library.path=${lib}"/>
+            <jvmarg value="-XstartOnFirstThread" if:set="platform.macos"/>
+            <!--<jvmarg value="-Xcheck:jni"/>-->
 
-    <!--         <jvmarg line="-XX:+UnlockDiagnosticVMOptions -XX:+TraceClassLoading -XX:+LogCompilation" if:set="jitwatch"/> -->
-    <!--         <jvmarg line="-XX:+PrintAssembly -XX:PrintAssemblyOptions=intel -XX:-TieredCompilation -XX:-UseCompressedOops" if:set="jitwatch"/> -->
-    <!--         <jvmarg line="-XX:LogFile=${jitwatch}" if:set="jitwatch"/> -->
+            <jvmarg line="-XX:+UnlockDiagnosticVMOptions -XX:+TraceClassLoading -XX:+LogCompilation" if:set="jitwatch"/>
+            <jvmarg line="-XX:+PrintAssembly -XX:PrintAssemblyOptions=intel -XX:-TieredCompilation -XX:-UseCompressedOops" if:set="jitwatch"/>
+            <jvmarg line="-XX:LogFile=${jitwatch}" if:set="jitwatch"/>
 
-    <!--         <jvmarg line="${jvmargs}" if:set="jvmargs"/> -->
+            <jvmarg line="${jvmargs}" if:set="jvmargs"/>
 
-    <!--         <arg line="${args}" if:set="args"/> -->
-    <!--     </java> -->
-    <!-- </target> -->
+            <arg line="${args}" if:set="args"/>
+        </java>
+    </target>
 
     <target name="-build-version" depends="compile">
         <local name="stderr"/>
@@ -714,56 +714,56 @@
     </target>
 
     <!-- Includes all modules for javadoc.lwjgl.org -->
-    <!-- <target name="javadoc" description="Generates the LWJGL JavaDoc" depends="-compile-generator,-build-version"> -->
-    <!--     <echo message="It is recommended to generate JavaDoc on JDK 9 or higher." unless:set="jdk9" taskname="Warning"/> -->
-    <!--     <delete dir="bin/javadoc"/> -->
+    <target name="javadoc" description="Generates the LWJGL JavaDoc" depends="-compile-generator,-build-version">
+        <echo message="It is recommended to generate JavaDoc on JDK 9 or higher." unless:set="jdk9" taskname="Warning"/>
+        <delete dir="bin/javadoc"/>
 
-    <!--     <path id="javadoc.sources"> -->
-    <!--         <pathelement path="${module.sourcepath}"/> -->
-    <!--     </path> -->
+        <path id="javadoc.sources">
+            <pathelement path="${module.sourcepath}"/>
+        </path>
 
-    <!--     <javadoc -->
-    <!--         destdir="bin/javadoc" -->
-    <!--         sourcepathref="javadoc.sources" -->
-    <!--         source="1.8" -->
-    <!--         windowtitle="LWJGL ${build.version}" -->
-    <!--         encoding="UTF-8" -->
-    <!--         docencoding="UTF-8" -->
-    <!--         charset="UTF-8" -->
-    <!--         useexternalfile="true" -->
-    <!--         nohelp="true" -->
-    <!--         notree="true" -->
-    <!--         public="true" -->
-    <!--         Splitindex="true" -->
-    <!--         doclet="org.lwjgl.system.ExcludeDoclet" -->
-    <!--         docletpath="${bin.generator}" -->
-    <!--         maxmemory="1G" -->
-    <!--         failonerror="true" -->
-    <!--     > -->
-    <!--         <doctitle><![CDATA[<h1>Lightweight Java Game Library</h1>]]></doctitle> -->
-    <!--         <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom> -->
+        <javadoc
+            destdir="bin/javadoc"
+            sourcepathref="javadoc.sources"
+            source="1.8"
+            windowtitle="LWJGL ${build.version}"
+            encoding="UTF-8"
+            docencoding="UTF-8"
+            charset="UTF-8"
+            useexternalfile="true"
+            nohelp="true"
+            notree="true"
+            public="true"
+            Splitindex="true"
+            doclet="org.lwjgl.system.ExcludeDoclet"
+            docletpath="${bin.generator}"
+            maxmemory="1G"
+            failonerror="true"
+        >
+            <doctitle><![CDATA[<h1>Lightweight Java Game Library</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom>
 
-    <!--         <classpath> -->
-    <!--             <pathelement path="${lib}/java/jsr305.jar"/> -->
-    <!--         </classpath> -->
+            <classpath>
+                <pathelement path="${lib}/java/jsr305.jar"/>
+            </classpath>
 
-    <!--         <arg value="-XDignore.symbol.file=true"/> <!-\- Supresses internal API (e.g. Unsafe) usage warnings -\-> -->
+            <arg value="-XDignore.symbol.file=true"/> <!-- Supresses internal API (e.g. Unsafe) usage warnings -->
 
-    <!--         <arg value="-Xdoclint"/> -->
-    <!--         <arg line="-Xmaxwarns 1000"/> -->
-    <!--         <arg value="-html5" if:set="jdk9"/> -->
-    <!--         <arg value="-stylesheetfile ${config}/javadoc.css" if:set="jdk9"/> -->
-    <!--         <arg line="-J-Dfile.encoding=UTF8"/> -->
-    <!--         <arg line="-\-add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/> -->
-    <!--     </javadoc> -->
-    <!--     <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="bin/javadoc"/> -->
+            <arg value="-Xdoclint"/>
+            <arg line="-Xmaxwarns 1000"/>
+            <arg value="-html5" if:set="jdk9"/>
+            <arg value="-stylesheetfile ${config}/javadoc.css" if:set="jdk9"/>
+            <arg line="-J-Dfile.encoding=UTF8"/>
+            <arg line="--add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/>
+        </javadoc>
+        <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="bin/javadoc"/>
 
-    <!--     <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true"> -->
-    <!--         <classpath path="${bin.generator}"/> -->
+        <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true">
+            <classpath path="${bin.generator}"/>
 
-    <!--         <arg value="bin/javadoc/org/lwjgl"/> -->
-    <!--     </java> -->
-    <!-- </target> -->
+            <arg value="bin/javadoc/org/lwjgl"/>
+        </java>
+    </target>
 
     <target name="upload-native" description="Uploads native build artifacts to build.lwjgl.org" depends="compile-native">
         <fail message="AWS credentials not configured.">
@@ -946,51 +946,51 @@
             <available file="${module.lwjgl}/@{name}/src/main/java" type="dir" property="hasMain"/>
 
             <!-- Bundle javadoc -->
-            <!-- <mkdir dir="${release}/${module}/javadoc"/> -->
-            <!-- <javadoc -->
-            <!--     destdir="${release}/${module}/javadoc" -->
-            <!--     source="1.8" -->
-            <!--     windowtitle="LWJGL ${build.version} - @{title}" -->
-            <!--     encoding="UTF-8" -->
-            <!--     docencoding="UTF-8" -->
-            <!--     charset="UTF-8" -->
-            <!--     useexternalfile="true" -->
-            <!--     nohelp="true" -->
-            <!--     notree="true" -->
-            <!--     public="true" -->
-            <!--     doclet="org.lwjgl.system.ExcludeDoclet" -->
-            <!--     docletpath="${bin.generator}" -->
-            <!--     failonerror="true" -->
-            <!-- > -->
-            <!--     <doctitle><![CDATA[<h1>LWJGL - @{title}</h1>]]></doctitle> -->
-            <!--     <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom> -->
+            <mkdir dir="${release}/${module}/javadoc"/>
+            <javadoc
+                destdir="${release}/${module}/javadoc"
+                source="1.8"
+                windowtitle="LWJGL ${build.version} - @{title}"
+                encoding="UTF-8"
+                docencoding="UTF-8"
+                charset="UTF-8"
+                useexternalfile="true"
+                nohelp="true"
+                notree="true"
+                public="true"
+                doclet="org.lwjgl.system.ExcludeDoclet"
+                docletpath="${bin.generator}"
+                failonerror="true"
+            >
+                <doctitle><![CDATA[<h1>LWJGL - @{title}</h1>]]></doctitle>
+                <bottom><![CDATA[<i>Copyright LWJGL. All Rights Reserved. <a href="https://www.lwjgl.org/license">License terms</a>.</i>]]></bottom>
 
-            <!--     <classpath> -->
-            <!--         <pathelement path="${module.classpath}"/> -->
-            <!--         <pathelement path="${lib}/java/jsr305.jar"/> -->
-            <!--     </classpath> -->
+                <classpath>
+                    <pathelement path="${module.classpath}"/>
+                    <pathelement path="${lib}/java/jsr305.jar"/>
+                </classpath>
 
-            <!--     <fileset dir="${module.lwjgl}/@{name}/src/main/java" includes="**" if:set="hasMain"/> -->
-            <!--     <fileset dir="${module.lwjgl}/@{name}/src/generated/java" includes="**"/> -->
+                <fileset dir="${module.lwjgl}/@{name}/src/main/java" includes="**" if:set="hasMain"/>
+                <fileset dir="${module.lwjgl}/@{name}/src/generated/java" includes="**"/>
 
-            <!--     <arg value="-XDignore.symbol.file=true"/> <!-\- Supresses internal API (e.g. Unsafe) usage warnings -\-> -->
+                <arg value="-XDignore.symbol.file=true"/> <!-- Supresses internal API (e.g. Unsafe) usage warnings -->
 
-            <!--     <arg value="-Xdoclint:none"/> -->
-            <!--     <arg line="-Xmaxwarns 1"/> -->
-            <!--     <arg value="-html5" if:set="jdk9"/> -->
-            <!--     <arg value="-stylesheetfile ${config}/javadoc.css" if:set="jdk9"/> -->
-            <!--     <arg line="-J-Dfile.encoding=UTF8"/> -->
-            <!--     <arg line="-\-add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/> -->
-            <!-- </javadoc> -->
-            <!-- <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="${release}/${module}/javadoc"/> -->
+                <arg value="-Xdoclint:none"/>
+                <arg line="-Xmaxwarns 1"/>
+                <arg value="-html5" if:set="jdk9"/>
+                <arg value="-stylesheetfile ${config}/javadoc.css" if:set="jdk9"/>
+                <arg line="-J-Dfile.encoding=UTF8"/>
+                <arg line="--add-exports jdk.javadoc/com.sun.tools.doclets=ALL-UNNAMED" if:set="jdk9"/>
+            </javadoc>
+            <get-quiet name="favicon" url="https://www.lwjgl.org/favicon.ico" dest="${release}/${module}/javadoc"/>
 
-            <!-- <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true"> -->
-            <!--     <classpath path="${bin.generator}"/> -->
+            <java classname="org.lwjgl.system.JavadocPostProcess" failonerror="true">
+                <classpath path="${bin.generator}"/>
 
-            <!--     <arg value="${release}/${module}/javadoc/org/lwjgl"/> -->
-            <!-- </java> -->
-            <!-- <zip destfile="${release}/${module}/${module}-javadoc.jar" basedir="${release}/${module}/javadoc" includes="**" level="9"/> -->
-            <!-- <delete dir="${release}/${module}/javadoc"/> -->
+                <arg value="${release}/${module}/javadoc/org/lwjgl"/>
+            </java>
+            <zip destfile="${release}/${module}/${module}-javadoc.jar" basedir="${release}/${module}/javadoc" includes="**" level="9"/>
+            <delete dir="${release}/${module}/javadoc"/>
 
             <!-- Bundle source -->
             <copy
