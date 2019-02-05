@@ -26,16 +26,18 @@
         <sequential>
             <local name="cpp"/>
             <condition property="cpp"><not><equals arg1="@{lang}" arg2="c"/></not></condition>
-            <local name="gcc"/>
-            <condition property="gcc" value="gcc" else="g++"><equals arg1="@{lang}" arg2="c"/></condition>
+            <local name="clang"/>
+            <condition property="clang" value="clang" else="clang++"><equals arg1="@{lang}" arg2="c"/></condition>
 
             <mkdir dir="@{dest}"/>
-            <apply dir="@{dest}" executable="${gcc}" dest="@{dest}" skipemptyfilesets="true" failonerror="true" parallel="true" taskname="Compiler">
+            <apply dir="@{dest}" executable="${clang}" dest="@{dest}" skipemptyfilesets="true" failonerror="true" parallel="true" taskname="Compiler">
                 <arg line="-c -std=c11" unless:set="cpp"/>
                 <arg line="-c -std=c++11" if:set="cpp"/>
                 <arg line="-m64" if:true="${build.arch.x64}"/>
                 <arg line="-m32 -mfpmath=sse -msse -msse2" unless:true="${build.arch.x64}"/>
                 <arg line="-O3 @{lto} -fPIC @{flags} -pthread -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -D_GNU_SOURCE -DNDEBUG -DLWJGL_LINUX -DLWJGL_${build.arch}"/>
+
+                <arg value="-I/usr/local/include"/>
 
                 <arg value="-I${jni.headers}"/>
                 <arg value="-I${jni.headers}/freebsd"/>
@@ -55,9 +57,9 @@
 
     <macrodef name="build">
         <attribute name="module"/>
-        <attribute name="linker" default="gcc"/>
+        <attribute name="linker" default="clang"/>
         <attribute name="lang" default="c"/>
-        <attribute name="flags" default="-Werror -Wfatal-errors -Wall -Wextra -pedantic -Wno-extended-offsetof"/>
+        <attribute name="flags" default="-Werror -Wfatal-errors -Wall -Wextra -pedantic"/>
         <attribute name="simple" default="false"/>
         <element name="beforeCompile" optional="true"/>
         <element name="source" optional="true"/>
@@ -94,13 +96,13 @@
             <local name="version.script"/>
             <property name="version.script" location="config/${platform}/version.script"/>
 
-            <local name="gcc"/>
-            <condition property="gcc" value="@{linker}"><not><equals arg1="@{linker}" arg2="gcc"/></not></condition>
-            <condition property="gcc" value="gcc" else="g++"><equals arg1="@{lang}" arg2="c"/></condition>
+            <local name="clang"/>
+            <condition property="clang" value="@{linker}"><not><equals arg1="@{linker}" arg2="clang"/></not></condition>
+            <condition property="clang" value="clang" else="clang++"><equals arg1="@{lang}" arg2="c"/></condition>
 
-            <echo message="Linking ${name}" taskname="${gcc}" unless:set="lib-uptodate"/>
+            <echo message="Linking ${name}" taskname="${clang}" unless:set="lib-uptodate"/>
             <beforeLink/>
-            <apply executable="${gcc}" failonerror="true" parallel="true" taskname="Linker" unless:set="lib-uptodate">
+            <apply executable="${clang}" failonerror="true" parallel="true" taskname="Linker" unless:set="lib-uptodate">
                 <srcfile/>
                 <arg value="-shared"/>
                 <arg value="-m64" if:true="${build.arch.x64}"/>
