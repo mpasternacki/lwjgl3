@@ -1033,27 +1033,27 @@
         </java>
     </target>
 
-    <target name="-check-release-jdk">
-        <fail message="The JAVA8_HOME environment variable is not set." if:set="jdk9">
-            <condition>
-                <not><isset property="env.JAVA8_HOME"/></not>
-            </condition>
-        </fail>
+    <!-- <target name="-check-release-jdk"> -->
+    <!--     <fail message="The JAVA8_HOME environment variable is not set." if:set="jdk9"> -->
+    <!--         <condition> -->
+    <!--             <not><isset property="env.JAVA8_HOME"/></not> -->
+    <!--         </condition> -->
+    <!--     </fail> -->
 
-        <local name="input"/>
-        <input
-            message="It is recommended to build LWJGL releases on JDK 9 or higher. Continue with JDK 8?"
-            validargs="y,n"
-            defaultvalue="n"
-            addproperty="input"
-            unless:set="jdk9"
-        />
-        <fail message="Cancelled" unless:set="jdk9">
-            <condition>
-                <equals arg1="n" arg2="${input}"/>
-            </condition>
-        </fail>
-    </target>
+    <!--     <local name="input"/> -->
+    <!--     <input -->
+    <!--         message="It is recommended to build LWJGL releases on JDK 9 or higher. Continue with JDK 8?" -->
+    <!--         validargs="y,n" -->
+    <!--         defaultvalue="n" -->
+    <!--         addproperty="input" -->
+    <!--         unless:set="jdk9" -->
+    <!--     /> -->
+    <!--     <fail message="Cancelled" unless:set="jdk9"> -->
+    <!--         <condition> -->
+    <!--             <equals arg1="n" arg2="${input}"/> -->
+    <!--         </condition> -->
+    <!--     </fail> -->
+    <!-- </target> -->
 
     <target name="release" depends="-check-release-jdk,clean-java,compile,-build-version">
         <local name="revision"/>
