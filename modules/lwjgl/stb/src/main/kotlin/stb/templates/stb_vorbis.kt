@@ -10,7 +10,7 @@ import stb.*
 val stb_vorbis = "STBVorbis".nativeClass(Module.STB, prefixMethod = "stb_vorbis_", prefixConstant = "VORBIS_", library = STB_LIBRARY) {
     includeSTBAPI(
         """#ifdef LWJGL_LINUX
-    #include <alloca.h>
+    #include <stdlib.h>
 #endif
 #include "stb_vorbis.c"""")
 
