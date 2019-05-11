@@ -13,8 +13,8 @@
         <equals arg1="${build.arch}" arg2="x64"/>
     </condition>
 
-    <condition property="gcc.suffix" value="-${gcc.version}" else="">
-        <isset property="gcc.version"/>
+    <condition property="clang.suffix" value="-${clang.version}" else="">
+        <isset property="clang.version"/>
     </condition>
 
     <property name="module.lwjgl.rel" value="../../../../${module.lwjgl}"/>
@@ -22,8 +22,8 @@
     <macrodef name="compile">
         <attribute name="dest" default="${dest}"/>
         <attribute name="lang" default="c"/>
-        <attribute name="gcc.exec" default="gcc${gcc.suffix}"/>
-        <attribute name="gpp.exec" default="g++${gcc.suffix}"/>
+        <attribute name="clang.exec" default="clang${clang.suffix}"/>
+        <attribute name="clangpp.exec" default="clang++${clang.suffix}"/>
         <attribute name="lto" default="-flto"/>
         <attribute name="flags" default=""/>
         <attribute name="simple" default="false"/>
@@ -32,19 +32,20 @@
         <sequential>
             <local name="cpp"/>
             <condition property="cpp"><not><equals arg1="@{lang}" arg2="c"/></not></condition>
-            <local name="gcc"/>
-            <condition property="gcc" value="@{gcc.exec}" else="@{gpp.exec}"><equals arg1="@{lang}" arg2="c"/></condition>
+            <local name="clang"/>
+            <condition property="clang" value="@{clang.exec}" else="@{clangpp.exec}"><equals arg1="@{lang}" arg2="c"/></condition>
 
             <mkdir dir="@{dest}"/>
-            <apply dir="@{dest}" executable="${gcc}" dest="@{dest}" skipemptyfilesets="true" failonerror="true" parallel="true" taskname="Compiler">
+            <apply dir="@{dest}" executable="${clang}" dest="@{dest}" skipemptyfilesets="true" failonerror="true" parallel="true" taskname="Compiler">
                 <arg line="-c -std=c11" unless:set="cpp"/>
                 <arg line="-c -std=c++11" if:set="cpp"/>
                 <arg line="-m64" if:true="${build.arch.x64}"/>
                 <arg line="-m32 -mfpmath=sse -msse -msse2" unless:true="${build.arch.x64}"/>
                 <arg line="-O3 @{lto} -fPIC @{flags} -pthread -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -D_GNU_SOURCE -DNDEBUG -DLWJGL_LINUX -DLWJGL_${build.arch}"/>
 
+		<arg value="-I/usr/local/include"/>
                 <arg value="-I${jni.headers}"/>
-                <arg value="-I${jni.headers}/linux"/>
+                <arg value="-I${jni.headers}/freebsd"/>
 
                 <arg value="-I${module.lwjgl.rel}/core/src/main/c"/>
                 <arg value="-I${module.lwjgl.rel}/core/src/main/c/${platform}"/>
@@ -61,10 +62,10 @@
 
     <macrodef name="build">
         <attribute name="module"/>
-        <attribute name="linker" default="gcc"/>
+        <attribute name="linker" default="clang"/>
         <attribute name="lang" default="c"/>
-        <attribute name="gcc.exec" default="gcc${gcc.suffix}"/>
-        <attribute name="gpp.exec" default="g++${gcc.suffix}"/>
+        <attribute name="clang.exec" default="clang${clang.suffix}"/>
+        <attribute name="clangpp.exec" default="clang++${clang.suffix}"/>
         <attribute name="flags" default="-Werror -Wfatal-errors"/>
         <attribute name="simple" default="false"/>
         <element name="beforeCompile" optional="true"/>
@@ -88,31 +89,31 @@
             <property name="dest" value="${bin.native}/@{module}"/>
 
             <beforeCompile/>
-            <compile lang="@{lang}" gcc.exec="@{gcc.exec}" gpp.exec="@{gpp.exec}" flags="@{flags}" simple="@{simple}">
+            <compile lang="@{lang}" clang.exec="@{clang.exec}" clangpp.exec="@{clangpp.exec}" flags="@{flags}" simple="@{simple}">
                 <source/>
             </compile>
 
             <local name="lib-uptodate"/>
             <uptodate property="lib-uptodate" targetfile="${lib}/lib${name}${LIB_POSTFIX}.so">
                 <srcfiles file="config/${platform}/build.xml"/>
-                <srcfiles file="${bin.native}/wrap_memcpy.o" if:true="${build.arch.x64}"/>
+                <!-- <srcfiles file="${bin.native}/wrap_memcpy.o" if:true="${build.arch.x64}"/> -->
                 <srcfiles dir="${dest}" includes="**"/>
             </uptodate>
 
             <local name="version.script"/>
             <property name="version.script" location="config/${platform}/version.script"/>
 
-            <local name="gcc"/>
-            <condition property="gcc" value="@{gcc.exec}" else="@{gpp.exec}">
+            <local name="clang"/>
+            <condition property="clang" value="@{clang.exec}" else="@{clangpp.exec}">
                 <and>
                     <equals arg1="@{lang}" arg2="c"/>
-                    <equals arg1="@{linker}" arg2="gcc"/>
+                    <equals arg1="@{linker}" arg2="clang"/>
                 </and>
             </condition>
 
-            <echo message="Linking ${name}" taskname="${gcc}" unless:set="lib-uptodate"/>
+            <echo message="Linking ${name}" taskname="${clang}" unless:set="lib-uptodate"/>
             <beforeLink/>
-            <apply executable="${gcc}" failonerror="true" parallel="true" taskname="Linker" unless:set="lib-uptodate">
+            <apply executable="${clang}" failonerror="true" parallel="true" taskname="Linker" unless:set="lib-uptodate">
                 <srcfile/>
                 <arg value="-shared"/>
                 <arg value="-m64" if:true="${build.arch.x64}"/>
@@ -123,8 +124,8 @@
 
                 <arg line="-Wl,--no-undefined"/>
                 <arg line="-Wl,--version-script,${version.script}"/>
-                <arg line="-Wl,--wrap,memcpy" if:true="${build.arch.x64}"/>
-                <fileset dir="${bin.native}" includes="wrap_memcpy.o" if:true="${build.arch.x64}"/>
+                <!-- <arg line="-Wl,-\-wrap,memcpy" if:true="${build.arch.x64}"/> -->
+                <!-- <fileset dir="${bin.native}" includes="wrap_memcpy.o" if:true="${build.arch.x64}"/> -->
                 <fileset dir="${dest}" includes="*.o"/>
                 <link/>
             </apply>
@@ -138,17 +139,17 @@
 
     <macrodef name="build_simple">
         <attribute name="module"/>
-        <attribute name="gcc.exec" default="gcc${gcc.suffix}"/>
-        <attribute name="gpp.exec" default="g++${gcc.suffix}"/>
+        <attribute name="clang.exec" default="clang${clang.suffix}"/>
+        <attribute name="clangpp.exec" default="clang++${clang.suffix}"/>
         <sequential>
-            <build module="@{module}" gcc.exec="@{gcc.exec}" gpp.exec="@{gpp.exec}" simple="true" if:true="${binding.@{module}}"/>
+            <build module="@{module}" clang.exec="@{clang.exec}" clangpp.exec="@{clangpp.exec}" simple="true" if:true="${binding.@{module}}"/>
         </sequential>
     </macrodef>
 
     <target name="compile-native-platform">
-        <compile dest="${bin.native}" lto="">
-            <fileset dir="." includes="${module.lwjgl}/core/src/main/c/${platform}/wrap_memcpy.c"/>
-        </compile>
+        <!-- <compile dest="${bin.native}" lto=""> -->
+            <!-- <fileset dir="." includes="${module.lwjgl}/core/src/main/c/${platform}/wrap_memcpy.c"/> -->
+        <!-- </compile> -->
 
         <parallel threadsPerProcessor="2">
 
@@ -163,24 +164,27 @@
                     <include name="${module.lwjgl}/jawt/src/generated/c/*.c" if:true="${binding.jawt}"/>
                 </fileset>
             </source>
-            <beforeLink>
-                <mkdir dir="${lib}/${platform}/${build.arch}"/>
-                <parallel threadsPerProcessor="2" failonany="true" unless:set="lib-uptodate">
-                    <update-dependency name="dyncall" artifact="${build.arch}/libdyncall_s.a"/>
-                    <update-dependency name="dyncallback" artifact="${build.arch}/libdyncallback_s.a"/>
-                    <update-dependency name="dynload" artifact="${build.arch}/libdynload_s.a"/>
-                </parallel>
-            </beforeLink>
+            <!-- <beforeLink> -->
+            <!--     <mkdir dir="${lib}/${platform}/${build.arch}"/> -->
+            <!--     <parallel threadsPerProcessor="2" failonany="true" unless:set="lib-uptodate"> -->
+            <!--         <update-dependency name="dyncall" artifact="${build.arch}/libdyncall_s.a"/> -->
+            <!--         <update-dependency name="dyncallback" artifact="${build.arch}/libdyncallback_s.a"/> -->
+            <!--         <update-dependency name="dynload" artifact="${build.arch}/libdynload_s.a"/> -->
+            <!--     </parallel> -->
+            <!-- </beforeLink> -->
             <link>
-                <fileset dir="${lib}/${platform}/${build.arch}/">
+                <fileset dir="/usr/local/lib/">
                     <include name="libdyn*.a"/>
-                </fileset>
-                <arg value="-ldl"/>
+		</fileset>
+		<!-- <fileset dir="${lib}/${platform}/${build.arch}/"> -->
+                <!--     <include name="libdyn*.a"/> -->
+                <!-- </fileset> -->
+                <!-- <arg value="-ldl"/> -->
             </link>
         </build>
 
         <!-- BULLET -->
-        <build module="bullet" simple="true" linker="g++" if:true="${binding.bullet}">
+        <build module="bullet" simple="true" linker="clang++" if:true="${binding.bullet}">
             <beforeLink>
                 <mkdir dir="${lib}/${platform}/${build.arch}/bullet"/>
                 <parallel threadsPerProcessor="2" failonany="true" unless:set="lib-uptodate">
@@ -220,74 +224,74 @@
         <build_simple module="llvm"/>
 
         <!-- LMDB -->
-        <build module="lmdb" simple="true" if:true="${binding.lmdb}">
-            <beforeCompile>
-                <compile>
-                    <arg value="-I${src.main.rel}"/>
-                    <arg value="-DMDB_USE_ROBUST=0"/>
-                    <fileset dir="." includes="${src.main}/*.c"/>
-                </compile>
-            </beforeCompile>
-        </build>
+        <!-- <build module="lmdb" simple="true" if:true="${binding.lmdb}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <arg value="-DMDB_USE_ROBUST=0"/> -->
+        <!--             <fileset dir="." includes="${src.main}/*.c"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!-- </build> -->
 
         <!-- LZ4 -->
-        <build module="lz4" simple="true" if:true="${binding.lz4}">
-            <beforeCompile>
-                <compile>
-                    <arg value="-I${src.main.rel}"/>
-                    <arg value="-I${module.lwjgl.rel}/xxhash/src/main/c"/>
-                    <fileset dir="." includes="${src.main}/*.c"/>
-                    <fileset dir="." includes="${module.lwjgl}/xxhash/src/main/c/*.c"/>
-                </compile>
-            </beforeCompile>
-        </build>
+        <!-- <build module="lz4" simple="true" if:true="${binding.lz4}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <arg value="-I${module.lwjgl.rel}/xxhash/src/main/c"/> -->
+        <!--             <fileset dir="." includes="${src.main}/*.c"/> -->
+        <!--             <fileset dir="." includes="${module.lwjgl}/xxhash/src/main/c/*.c"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!-- </build> -->
 
         <!-- Meow -->
-        <build module="meow" simple="true" flags="-Werror -Wfatal-errors -maes -msse4.2" if:true="${binding.meow}"/>
+        <!-- <build module="meow" simple="true" flags="-Werror -Wfatal-errors -maes -msse4.2" if:true="${binding.meow}"/> -->
 
         <!-- NanoVG -->
-        <build module="nanovg" simple="true" if:true="${binding.nanovg}">
-            <source>
-                <arg value="-isystem${module.lwjgl.rel}/stb/src/main/c"/>
-            </source>
-            <link>
-                <arg value="-lm"/>
-            </link>
-        </build>
+        <!-- <build module="nanovg" simple="true" if:true="${binding.nanovg}"> -->
+        <!--     <source> -->
+        <!--         <arg value="-isystem${module.lwjgl.rel}/stb/src/main/c"/> -->
+        <!--     </source> -->
+        <!--     <link> -->
+        <!--         <arg value="-lm"/> -->
+        <!--     </link> -->
+        <!-- </build> -->
 
         <!-- NativeFileDialog -->
-        <build module="nfd" simple="true" if:true="${binding.nfd}">
-            <beforeCompile>
-                <local name="gtk3"/>
-                <local name="stderr"/>
-                <exec outputproperty="gtk3" errorproperty="stderr" executable="pkg-config" failonerror="true" taskname="gtk-3.0">
-                    <arg line="--cflags gtk+-3.0"/>
-                </exec>
+        <!-- <build module="nfd" simple="true" if:true="${binding.nfd}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <local name="gtk3"/> -->
+        <!--         <local name="stderr"/> -->
+        <!--         <exec outputproperty="gtk3" errorproperty="stderr" executable="pkg-config" failonerror="true" taskname="gtk-3.0"> -->
+        <!--             <arg line="-\-cflags gtk+-3.0"/> -->
+        <!--         </exec> -->
 
-                <compile>
-                    <arg line="${gtk3}"/>
-                    <arg value="-I${src.main.rel}"/>
-                    <arg value="-I${src.main.rel}/include"/>
-                    <fileset dir="." includes="${src.main}/nfd_common.c"/>
-                    <fileset dir="." includes="${src.main}/nfd_gtk.c"/>
-                </compile>
-            </beforeCompile>
-            <source>
-                <arg value="-I${src.main.rel}/include"/>
-            </source>
-            <link>
-                <arg value="-lglib-2.0"/>
-                <arg value="-lgobject-2.0"/>
-                <arg value="-lgtk-3"/>
-            </link>
-        </build>
+        <!--         <compile> -->
+        <!--             <arg line="${gtk3}"/> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <arg value="-I${src.main.rel}/include"/> -->
+        <!--             <fileset dir="." includes="${src.main}/nfd_common.c"/> -->
+        <!--             <fileset dir="." includes="${src.main}/nfd_gtk.c"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!--     <source> -->
+        <!--         <arg value="-I${src.main.rel}/include"/> -->
+        <!--     </source> -->
+        <!--     <link> -->
+        <!--         <arg value="-lglib-2.0"/> -->
+        <!--         <arg value="-lgobject-2.0"/> -->
+        <!--         <arg value="-lgtk-3"/> -->
+        <!--     </link> -->
+        <!-- </build> -->
 
         <!-- Nuklear -->
-        <build simple="true" module="nuklear">
-            <link>
-                <arg value="-lm"/>
-            </link>
-        </build>
+        <!-- <build simple="true" module="nuklear"> -->
+        <!--     <link> -->
+        <!--         <arg value="-lm"/> -->
+        <!--     </link> -->
+        <!-- </build> -->
 
         <!-- OpenGL -->
         <build_simple module="opengl"/>
@@ -296,36 +300,36 @@
         <build_simple module="opengles"/>
 
         <!-- OpenVR -->
-        <build_simple module="openvr"/>
+        <!-- <build_simple module="openvr"/> -->
 
         <!-- ParShapes -->
-        <build simple="true" module="par">
-            <link>
-                <arg value="-lm"/>
-            </link>
-        </build>
+        <!-- <build simple="true" module="par"> -->
+        <!--     <link> -->
+        <!--         <arg value="-lm"/> -->
+        <!--     </link> -->
+        <!-- </build> -->
 
         <!-- Remotery -->
-        <build module="remotery" if:true="${binding.remotery}">
-            <source>
-                <arg value="-I${src.main.rel}"/>
-                <fileset dir="." includes="${src.generated}/*.c" excludes="**/*Metal.c"/>
-            </source>
-            <link>
-                <arg value="-ldl"/>
-                <arg value="-lGL"/>
-            </link>
-        </build>
+        <!-- <build module="remotery" if:true="${binding.remotery}"> -->
+        <!--     <source> -->
+        <!--         <arg value="-I${src.main.rel}"/> -->
+        <!--         <fileset dir="." includes="${src.generated}/*.c" excludes="**/*Metal.c"/> -->
+        <!--     </source> -->
+        <!--     <link> -->
+        <!--         <arg value="-ldl"/> -->
+        <!--         <arg value="-lGL"/> -->
+        <!--     </link> -->
+        <!-- </build> -->
 
         <!-- rpmalloc -->
-        <build_simple module="rpmalloc"/>
+        <!-- <build_simple module="rpmalloc"/> -->
 
         <!-- SSE -->
-        <build module="sse" simple="true" if:true="${binding.sse}">
-            <source>
-                <arg value="-msse3"/>
-            </source>
-        </build>
+        <!-- <build module="sse" simple="true" if:true="${binding.sse}"> -->
+        <!--     <source> -->
+        <!--         <arg value="-msse3"/> -->
+        <!--     </source> -->
+        <!-- </build> -->
 
         <!-- stb -->
         <build module="stb" if:true="${binding.stb}">
@@ -339,99 +343,99 @@
         </build>
 
         <!-- tinyexr -->
-        <build module="tinyexr" simple="true" linker="g++" if:true="${binding.tinyexr}">
-            <beforeCompile>
-                <compile lang="c++">
-                    <arg value="-I${src.main.rel}"/>
-                    <fileset dir="." includes="${src.main}/*.cc"/>
-                </compile>
-            </beforeCompile>
-        </build>
+        <!-- <build module="tinyexr" simple="true" linker="clang++" if:true="${binding.tinyexr}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile lang="c++"> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <fileset dir="." includes="${src.main}/*.cc"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!-- </build> -->
 
         <!-- tiny file dialogs -->
-        <build module="tinyfd" simple="true" if:true="${binding.tinyfd}">
-            <beforeCompile>
-                <compile>
-                    <arg value="-I${src.main.rel}"/>
-                    <fileset dir="." includes="${src.main}/*.c"/>
-                </compile>
-            </beforeCompile>
-        </build>
+        <!-- <build module="tinyfd" simple="true" if:true="${binding.tinyfd}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <fileset dir="." includes="${src.main}/*.c"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!-- </build> -->
 
         <!-- AMD Tootle -->
-        <build module="tootle" lang="c++" if:true="${binding.tootle}">
-            <beforeCompile>
-                <compile flags="-D_SOFTWARE_ONLY_VERSION -D_LINUX">
-                    <arg value="-I${src.main.rel}"/>
-                    <fileset dir="." includes="${src.main}/*.c"/>
-                </compile>
-                <compile lang="c++" flags="-D_SOFTWARE_ONLY_VERSION -D_LINUX">
-                    <arg value="-I${src.main.rel}"/>
-                    <arg value="-I${src.main.rel}/include"/>
-                    <arg value="-I${src.main.rel}/RayTracer"/>
-                    <arg value="-I${src.main.rel}/RayTracer/JRT"/>
-                    <arg value="-I${src.main.rel}/RayTracer/Math"/>
-                    <fileset dir=".">
-                        <include name="${src.main}/*.cpp"/>
-                        <exclude name="${src.main}/d3d*.cpp"/>
-                        <exclude name="${src.main}/gdi*.cpp"/>
-                    </fileset>
-                    <fileset dir="." includes="${src.main}/RayTracer/*.cpp"/>
-                    <fileset dir="." includes="${src.main}/RayTracer/JRT/*.cpp"/>
-                    <fileset dir="." includes="${src.main}/RayTracer/Math/*.cpp"/>
-                </compile>
-            </beforeCompile>
-            <source>
-                <arg value="-D_LINUX"/>
-                <arg value="-I${src.main.rel}/include"/>
-                <fileset dir="." includes="${src.generated}/*.cpp"/>
-            </source>
-        </build>
+        <!-- <build module="tootle" lang="c++" if:true="${binding.tootle}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile flags="-D_SOFTWARE_ONLY_VERSION -D_LINUX"> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <fileset dir="." includes="${src.main}/*.c"/> -->
+        <!--         </compile> -->
+        <!--         <compile lang="c++" flags="-D_SOFTWARE_ONLY_VERSION -D_LINUX"> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <arg value="-I${src.main.rel}/include"/> -->
+        <!--             <arg value="-I${src.main.rel}/RayTracer"/> -->
+        <!--             <arg value="-I${src.main.rel}/RayTracer/JRT"/> -->
+        <!--             <arg value="-I${src.main.rel}/RayTracer/Math"/> -->
+        <!--             <fileset dir="."> -->
+        <!--                 <include name="${src.main}/*.cpp"/> -->
+        <!--                 <exclude name="${src.main}/d3d*.cpp"/> -->
+        <!--                 <exclude name="${src.main}/gdi*.cpp"/> -->
+        <!--             </fileset> -->
+        <!--             <fileset dir="." includes="${src.main}/RayTracer/*.cpp"/> -->
+        <!--             <fileset dir="." includes="${src.main}/RayTracer/JRT/*.cpp"/> -->
+        <!--             <fileset dir="." includes="${src.main}/RayTracer/Math/*.cpp"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!--     <source> -->
+        <!--         <arg value="-D_LINUX"/> -->
+        <!--         <arg value="-I${src.main.rel}/include"/> -->
+        <!--         <fileset dir="." includes="${src.generated}/*.cpp"/> -->
+        <!--     </source> -->
+        <!-- </build> -->
 
         <!-- Vulkan Memory Allocator -->
-        <build module="vma" lang="c++" if:true="${binding.vma}">
-            <source>
-                <arg value="-I${src.main.rel}"/>
-                <arg value="-I${module.lwjgl.rel}/vulkan/src/main/c"/>
-                <fileset dir="." includes="${src.generated}/*.cpp"/>
-            </source>
-        </build>
+        <!-- <build module="vma" lang="c++" if:true="${binding.vma}"> -->
+        <!--     <source> -->
+        <!--         <arg value="-I${src.main.rel}"/> -->
+        <!--         <arg value="-I${module.lwjgl.rel}/vulkan/src/main/c"/> -->
+        <!--         <fileset dir="." includes="${src.generated}/*.cpp"/> -->
+        <!--     </source> -->
+        <!-- </build> -->
 
         <!-- xxHash -->
-        <build_simple module="xxhash"/>
+        <!-- <build_simple module="xxhash"/> -->
 
         <!-- yoga -->
-        <build module="yoga" simple="true" linker="g++" if:true="${binding.yoga}">
-            <beforeCompile>
-                <compile lang="c++">
-                    <arg value="-I${src.main.rel}"/>
-                    <fileset dir="." includes="${src.main}/*.cpp"/>
-                </compile>
-            </beforeCompile>
-        </build>
+        <!-- <build module="yoga" simple="true" linker="clang++" if:true="${binding.yoga}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile lang="c++"> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <fileset dir="." includes="${src.main}/*.cpp"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!-- </build> -->
 
         <!-- zstd -->
-        <build module="zstd" simple="true" if:true="${binding.zstd}">
-            <beforeCompile>
-                <compile flags="-DZSTD_MULTITHREAD">
-                    <arg value="-I${src.main.rel}"/>
-                    <arg value="-I${src.main.rel}/common"/>
-                    <arg value="-I${src.main.rel}/compress"/>
-                    <arg value="-I${src.main.rel}/decompress"/>
-                    <arg value="-I${src.main.rel}/dictBuilder"/>
-                    <arg value="-I${module.lwjgl.rel}/xxhash/src/main/c"/>
-                    <fileset dir="." includes="${src.main}/common/*.c"/>
-                    <fileset dir="." includes="${src.main}/compress/*.c"/>
-                    <fileset dir="." includes="${src.main}/decompress/*.c"/>
-                    <fileset dir="." includes="${src.main}/dictBuilder/*.c"/>
-                    <fileset dir="." includes="${module.lwjgl}/xxhash/src/main/c/*.c"/>
-                </compile>
-            </beforeCompile>
-            <source>
-                <arg value="-I${src.main.rel}/common"/>
-                <arg value="-I${src.main.rel}/dictBuilder"/>
-            </source>
-        </build>
+        <!-- <build module="zstd" simple="true" if:true="${binding.zstd}"> -->
+        <!--     <beforeCompile> -->
+        <!--         <compile flags="-DZSTD_MULTITHREAD"> -->
+        <!--             <arg value="-I${src.main.rel}"/> -->
+        <!--             <arg value="-I${src.main.rel}/common"/> -->
+        <!--             <arg value="-I${src.main.rel}/compress"/> -->
+        <!--             <arg value="-I${src.main.rel}/decompress"/> -->
+        <!--             <arg value="-I${src.main.rel}/dictBuilder"/> -->
+        <!--             <arg value="-I${module.lwjgl.rel}/xxhash/src/main/c"/> -->
+        <!--             <fileset dir="." includes="${src.main}/common/*.c"/> -->
+        <!--             <fileset dir="." includes="${src.main}/compress/*.c"/> -->
+        <!--             <fileset dir="." includes="${src.main}/decompress/*.c"/> -->
+        <!--             <fileset dir="." includes="${src.main}/dictBuilder/*.c"/> -->
+        <!--             <fileset dir="." includes="${module.lwjgl}/xxhash/src/main/c/*.c"/> -->
+        <!--         </compile> -->
+        <!--     </beforeCompile> -->
+        <!--     <source> -->
+        <!--         <arg value="-I${src.main.rel}/common"/> -->
+        <!--         <arg value="-I${src.main.rel}/dictBuilder"/> -->
+        <!--     </source> -->
+        <!-- </build> -->
 
         </parallel>
 
