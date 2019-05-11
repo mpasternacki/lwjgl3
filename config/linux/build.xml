@@ -13,8 +13,8 @@
         <equals arg1="${build.arch}" arg2="x64"/>
     </condition>
 
-    <condition property="clang.suffix" value="-${clang.version}" else="">
-        <isset property="clang.version"/>
+    <condition property="gcc.suffix" value="-${gcc.version}" else="">
+        <isset property="gcc.version"/>
     </condition>
 
     <property name="module.lwjgl.rel" value="../../../../${module.lwjgl}"/>
@@ -22,8 +22,8 @@
     <macrodef name="compile">
         <attribute name="dest" default="${dest}"/>
         <attribute name="lang" default="c"/>
-        <attribute name="clang.exec" default="clang${clang.suffix}"/>
-        <attribute name="clangpp.exec" default="clang++${clang.suffix}"/>
+        <attribute name="gcc.exec" default="gcc${gcc.suffix}"/>
+        <attribute name="gpp.exec" default="g++${gcc.suffix}"/>
         <attribute name="lto" default="-flto"/>
         <attribute name="flags" default=""/>
         <attribute name="simple" default="false"/>
@@ -32,11 +32,11 @@
         <sequential>
             <local name="cpp"/>
             <condition property="cpp"><not><equals arg1="@{lang}" arg2="c"/></not></condition>
-            <local name="clang"/>
-            <condition property="clang" value="@{clang.exec}" else="@{clangpp.exec}"><equals arg1="@{lang}" arg2="c"/></condition>
+            <local name="gcc"/>
+            <condition property="gcc" value="@{gcc.exec}" else="@{gpp.exec}"><equals arg1="@{lang}" arg2="c"/></condition>
 
             <mkdir dir="@{dest}"/>
-            <apply dir="@{dest}" executable="${clang}" dest="@{dest}" skipemptyfilesets="true" failonerror="true" parallel="true" taskname="Compiler">
+            <apply dir="@{dest}" executable="${gcc}" dest="@{dest}" skipemptyfilesets="true" failonerror="true" parallel="true" taskname="Compiler">
                 <arg line="-c -std=c11" unless:set="cpp"/>
                 <arg line="-c -std=c++11" if:set="cpp"/>
                 <arg line="-m64" if:true="${build.arch.x64}"/>
@@ -62,10 +62,10 @@
 
     <macrodef name="build">
         <attribute name="module"/>
-        <attribute name="linker" default="clang"/>
+        <attribute name="linker" default="gcc"/>
         <attribute name="lang" default="c"/>
-        <attribute name="clang.exec" default="clang${clang.suffix}"/>
-        <attribute name="clangpp.exec" default="clang++${clang.suffix}"/>
+        <attribute name="gcc.exec" default="gcc${gcc.suffix}"/>
+        <attribute name="gpp.exec" default="g++${gcc.suffix}"/>
         <attribute name="flags" default="-Werror -Wfatal-errors"/>
         <attribute name="simple" default="false"/>
         <element name="beforeCompile" optional="true"/>
@@ -89,7 +89,7 @@
             <property name="dest" value="${bin.native}/@{module}"/>
 
             <beforeCompile/>
-            <compile lang="@{lang}" clang.exec="@{clang.exec}" clangpp.exec="@{clangpp.exec}" flags="@{flags}" simple="@{simple}">
+            <compile lang="@{lang}" gcc.exec="@{gcc.exec}" gpp.exec="@{gpp.exec}" flags="@{flags}" simple="@{simple}">
                 <source/>
             </compile>
 
@@ -103,17 +103,17 @@
             <local name="version.script"/>
             <property name="version.script" location="config/${platform}/version.script"/>
 
-            <local name="clang"/>
-            <condition property="clang" value="@{clang.exec}" else="@{clangpp.exec}">
+            <local name="gcc"/>
+            <condition property="gcc" value="@{gcc.exec}" else="@{gpp.exec}">
                 <and>
                     <equals arg1="@{lang}" arg2="c"/>
-                    <equals arg1="@{linker}" arg2="clang"/>
+                    <equals arg1="@{linker}" arg2="gcc"/>
                 </and>
             </condition>
 
-            <echo message="Linking ${name}" taskname="${clang}" unless:set="lib-uptodate"/>
+            <echo message="Linking ${name}" taskname="${gcc}" unless:set="lib-uptodate"/>
             <beforeLink/>
-            <apply executable="${clang}" failonerror="true" parallel="true" taskname="Linker" unless:set="lib-uptodate">
+            <apply executable="${gcc}" failonerror="true" parallel="true" taskname="Linker" unless:set="lib-uptodate">
                 <srcfile/>
                 <arg value="-shared"/>
                 <arg value="-m64" if:true="${build.arch.x64}"/>
@@ -139,10 +139,10 @@
 
     <macrodef name="build_simple">
         <attribute name="module"/>
-        <attribute name="clang.exec" default="clang${clang.suffix}"/>
-        <attribute name="clangpp.exec" default="clang++${clang.suffix}"/>
+        <attribute name="gcc.exec" default="gcc${gcc.suffix}"/>
+        <attribute name="gpp.exec" default="g++${gcc.suffix}"/>
         <sequential>
-            <build module="@{module}" clang.exec="@{clang.exec}" clangpp.exec="@{clangpp.exec}" simple="true" if:true="${binding.@{module}}"/>
+            <build module="@{module}" gcc.exec="@{gcc.exec}" gpp.exec="@{gpp.exec}" simple="true" if:true="${binding.@{module}}"/>
         </sequential>
     </macrodef>
 
@@ -184,7 +184,7 @@
         </build>
 
         <!-- BULLET -->
-        <build module="bullet" simple="true" linker="clang++" if:true="${binding.bullet}">
+        <build module="bullet" simple="true" linker="g++" if:true="${binding.bullet}">
             <beforeLink>
                 <mkdir dir="${lib}/${platform}/${build.arch}/bullet"/>
                 <parallel threadsPerProcessor="2" failonany="true" unless:set="lib-uptodate">
@@ -343,7 +343,7 @@
         </build>
 
         <!-- tinyexr -->
-        <!-- <build module="tinyexr" simple="true" linker="clang++" if:true="${binding.tinyexr}"> -->
+        <!-- <build module="tinyexr" simple="true" linker="g++" if:true="${binding.tinyexr}"> -->
         <!--     <beforeCompile> -->
         <!--         <compile lang="c++"> -->
         <!--             <arg value="-I${src.main.rel}"/> -->
@@ -405,7 +405,7 @@
         <!-- <build_simple module="xxhash"/> -->
 
         <!-- yoga -->
-        <!-- <build module="yoga" simple="true" linker="clang++" if:true="${binding.yoga}"> -->
+        <!-- <build module="yoga" simple="true" linker="g++" if:true="${binding.yoga}"> -->
         <!--     <beforeCompile> -->
         <!--         <compile lang="c++"> -->
         <!--             <arg value="-I${src.main.rel}"/> -->
