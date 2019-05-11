@@ -323,7 +323,7 @@
         </lwjgl.javac>
 
         <mkdir dir="${bin.lwjgl}/core/META-INF/versions/9" if:set="jdk9"/>
-        <mkdir dir="${bin.lwjgl}/core/META-INF/versions/10" if:set="jdk10"/>
+        <mkdir dir="${bin.lwjgl}/core/META-INF/versions/10" if:set="jdk12"/>
         <delete file="${bin.lwjgl}/core/META-INF/versions/9/module-info.class" quiet="true" if:set="jdk9"/>
         <lwjgl.javac9
             destdir="${bin.lwjgl}/core/META-INF/versions/9"
@@ -335,15 +335,15 @@
             taskname="javac: Core - Java 9"
             if:set="jdk9"
         />
-        <lwjgl.javac10
+        <lwjgl.javac12
             destdir="${bin.lwjgl}/core/META-INF/versions/10"
             classpath="${bin.lwjgl}/core"
 
             srcdir="${module.lwjgl}/core/src/main/java10"
             includes="**"
 
-            taskname="javac: Core - Java 10"
-            if:set="jdk10"
+            taskname="javac: Core - Java 12"
+            if:set="jdk12"
         />
 
         <parallel threadsPerProcessor="1">
@@ -755,7 +755,7 @@
 
     <!-- Includes all modules for javadoc.lwjgl.org -->
     <target name="javadoc" description="Generates the LWJGL JavaDoc" depends="-compile-generator,-build-version">
-        <echo message="It is recommended to generate JavaDoc on JDK 10 or higher." unless:set="jdk10" taskname="Warning"/>
+        <echo message="It is recommended to generate JavaDoc on JDK 10 or higher." unless:set="jdk12" taskname="Warning"/>
         <delete dir="${bin.javadoc}"/>
 
         <path id="javadoc.sources">
@@ -1071,7 +1071,7 @@
             validargs="y,n"
             defaultvalue="n"
             addproperty="input"
-            unless:set="jdk10"
+            unless:set="jdk12"
         />
         <fail message="Cancelled" unless:set="jdk9">
             <condition>
@@ -1114,7 +1114,7 @@
         <copy todir="${module.lwjgl}/core/src/generated/java/META-INF/versions/9" if:set="jdk9">
             <fileset dir="${module.lwjgl}/core/src/main/java9" includes="**"/>
         </copy>
-        <copy todir="${module.lwjgl}/core/src/generated/java/META-INF/versions/10" if:set="jdk10">
+        <copy todir="${module.lwjgl}/core/src/generated/java/META-INF/versions/10" if:set="jdk12">
             <fileset dir="${module.lwjgl}/core/src/main/java10" includes="**"/>
         </copy>
         <release-module package="org.lwjgl" name="core" native-library="lwjgl" license="dyncall" title="Core"/>
