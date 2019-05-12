@@ -323,7 +323,7 @@
         </lwjgl.javac>
 
         <mkdir dir="${bin.lwjgl}/core/META-INF/versions/9" if:set="jdk9"/>
-        <mkdir dir="${bin.lwjgl}/core/META-INF/versions/12" if:set="jdk12"/>
+        <mkdir dir="${bin.lwjgl}/core/META-INF/versions/10" if:set="jdk12"/>
         <delete file="${bin.lwjgl}/core/META-INF/versions/9/module-info.class" quiet="true" if:set="jdk9"/>
         <lwjgl.javac9
             destdir="${bin.lwjgl}/core/META-INF/versions/9"
@@ -336,10 +336,10 @@
             if:set="jdk9"
         />
         <lwjgl.javac12
-            destdir="${bin.lwjgl}/core/META-INF/versions/12"
+            destdir="${bin.lwjgl}/core/META-INF/versions/10"
             classpath="${bin.lwjgl}/core"
 
-            srcdir="${module.lwjgl}/core/src/main/java12"
+            srcdir="${module.lwjgl}/core/src/main/java10"
             includes="**"
 
             taskname="javac: Core - Java 12"
@@ -417,7 +417,7 @@
         <kotlinc moduleName="extract" output="${bin.extract}" printVersion="true" unless:set="extract-uptodate">
             <classpath>
                 <pathelement path="${bin.lwjgl}/core/META-INF/versions/9" if:set="core.java9"/>
-                <pathelement path="${bin.lwjgl}/core/META-INF/versions/12" if:set="core.java12"/>
+                <pathelement path="${bin.lwjgl}/core/META-INF/versions/10" if:set="core.java10"/>
                 <pathelement path="${module.classpath}"/>
                 <pathelement path="${kotlinc}/lib/kotlin-stdlib.jar"/>
                 <pathelement path="${kotlinc}/lib/kotlin-stdlib-jdk7.jar"/>
@@ -449,7 +449,7 @@
         <java classname="org.lwjgl.extract.MainKt" fork="true" spawn="true" taskname="LWJGL Template Extraction Tool">
             <classpath>
                 <pathelement path="${bin.lwjgl}/core/META-INF/versions/9" if:set="core.java9"/>
-                <pathelement path="${bin.lwjgl}/core/META-INF/versions/12" if:set="core.java12"/>
+                <pathelement path="${bin.lwjgl}/core/META-INF/versions/10" if:set="core.java10"/>
                 <pathelement path="${module.classpath}"/>
                 <pathelement path="${bin.extract}"/>
                 <pathelement path="${test.resources}"/>
@@ -684,7 +684,7 @@
         <testng outputDir="${bin.test.html}" taskname="Tests">
             <classpath>
                 <pathelement path="${bin.lwjgl}/core/META-INF/versions/9" if:set="core.java9"/>
-                <pathelement path="${bin.lwjgl}/core/META-INF/versions/12" if:set="core.java12"/>
+                <pathelement path="${bin.lwjgl}/core/META-INF/versions/10" if:set="core.java10"/>
                 <pathelement path="${module.classpath}"/>
                 <pathelement path="${bin.test}"/>
                 <pathelement path="${lib}/java/jcommander.jar"/>
@@ -719,7 +719,7 @@
         <java classname="${class}" fork="true" failonerror="${failonerror}" spawn="${spawn}" taskname="Demo">
             <classpath>
                 <pathelement path="${bin.lwjgl}/core/META-INF/versions/9" if:set="core.java9"/>
-                <pathelement path="${bin.lwjgl}/core/META-INF/versions/12" if:set="core.java12"/>
+                <pathelement path="${bin.lwjgl}/core/META-INF/versions/10" if:set="core.java10"/>
                 <pathelement path="${module.classpath}"/>
                 <pathelement path="${bin.test}"/>
                 <pathelement path="${bin.samples}"/>
@@ -755,7 +755,7 @@
 
     <!-- Includes all modules for javadoc.lwjgl.org -->
     <target name="javadoc" description="Generates the LWJGL JavaDoc" depends="-compile-generator,-build-version">
-        <echo message="It is recommended to generate JavaDoc on JDK 12 or higher." unless:set="jdk12" taskname="Warning"/>
+        <echo message="It is recommended to generate JavaDoc on JDK 10 or higher." unless:set="jdk12" taskname="Warning"/>
         <delete dir="${bin.javadoc}"/>
 
         <path id="javadoc.sources">
@@ -1058,27 +1058,27 @@
         </sequential>
     </macrodef>
 
-    <!-- <target name="-check-release-jdk"> -->
-    <!--     <fail message="The JAVA8_HOME environment variable is not set." if:set="jdk9"> -->
-    <!--         <condition> -->
-    <!--             <not><isset property="env.JAVA8_HOME"/></not> -->
-    <!--         </condition> -->
-    <!--     </fail> -->
+    <target name="-check-release-jdk">
+        <fail message="The JAVA8_HOME environment variable is not set." if:set="jdk9">
+            <condition>
+                <not><isset property="env.JAVA8_HOME"/></not>
+            </condition>
+        </fail>
 
-    <!--     <local name="input"/> -->
-    <!--     <input -->
-    <!--         message="It is recommended to build LWJGL releases on JDK 10 or higher. Continue with current JDK?" -->
-    <!--         validargs="y,n" -->
-    <!--         defaultvalue="n" -->
-    <!--         addproperty="input" -->
-    <!--         unless:set="jdk12" -->
-    <!--     /> -->
-    <!--     <fail message="Cancelled" unless:set="jdk9"> -->
-    <!--         <condition> -->
-    <!--             <equals arg1="n" arg2="${input}"/> -->
-    <!--         </condition> -->
-    <!--     </fail> -->
-    <!-- </target> -->
+        <local name="input"/>
+        <input
+            message="It is recommended to build LWJGL releases on JDK 10 or higher. Continue with current JDK?"
+            validargs="y,n"
+            defaultvalue="n"
+            addproperty="input"
+            unless:set="jdk12"
+        />
+        <fail message="Cancelled" unless:set="jdk9">
+            <condition>
+                <equals arg1="n" arg2="${input}"/>
+            </condition>
+        </fail>
+    </target>
 
     <target name="release" depends="-check-release-jdk,clean-java,compile,-build-version">
         <local name="revision"/>
@@ -1114,8 +1114,8 @@
         <copy todir="${module.lwjgl}/core/src/generated/java/META-INF/versions/9" if:set="jdk9">
             <fileset dir="${module.lwjgl}/core/src/main/java9" includes="**"/>
         </copy>
-        <copy todir="${module.lwjgl}/core/src/generated/java/META-INF/versions/12" if:set="jdk12">
-            <fileset dir="${module.lwjgl}/core/src/main/java12" includes="**"/>
+        <copy todir="${module.lwjgl}/core/src/generated/java/META-INF/versions/10" if:set="jdk12">
+            <fileset dir="${module.lwjgl}/core/src/main/java10" includes="**"/>
         </copy>
         <release-module package="org.lwjgl" name="core" native-library="lwjgl" license="dyncall" title="Core"/>
 
