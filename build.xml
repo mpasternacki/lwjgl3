@@ -1080,7 +1080,7 @@
     <!--     </fail> -->
     <!-- </target> -->
 
-    <target name="release" depends="clean-java,compile,-build-version">
+    <target name="release" depends="-check-release-jdk,clean-java,compile,-build-version">
         <local name="revision"/>
         <condition property="revision" value="build ${build.revision}" else="SNAPSHOT">
             <isset property="build.revision"/>
